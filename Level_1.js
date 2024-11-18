@@ -35,15 +35,14 @@ function drawHitboxes() {
   noFill();
   stroke(255, 0, 0);
   rect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
-  
   for (let f of food) {
     rect(f.hitbox.x, f.hitbox.y, f.hitbox.width, f.hitbox.height);
   }
-  
   if (enemyActive) {
     rect(enemy.hitbox.x, enemy.hitbox.y, enemy.hitbox.width, enemy.hitbox.height);
   }
 }
+
 
 function draw() {
   if (!gameOver && !nextLevel) {
@@ -158,7 +157,7 @@ function showNextLevelScreen() {
 }
 
 function checkEnemySpawn() {
-  if (score >= 10 && !enemyActive) {
+  if (score >= 1 && !enemyActive) {
     enemyActive = true;
     enemy.x = -200;
   }
@@ -191,7 +190,7 @@ function spawnFood() {
 }
 
 function powerUp() {
-  player.size += 3;
+  player.size += 13;
   checkNextLevel();
 }
 
@@ -209,12 +208,32 @@ function checkCollision(object1, object2) {
 
 class Player {
   constructor(size, level) {
-    let hitboxSize = size * 0.8
     this.x = width / 2;
     this.y = height - height / 7;
     this.size = size;
     this.level = level;
-    this.hitbox = new Hitbox(this.x - hitboxSize/2, this.y - hitboxSize/2, hitboxSize, hitboxSize);
+    this.updateHitbox();
+  }
+
+  updateHitbox() {
+    let hitboxSize = this.size * 0.8;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Adjust offsets based on level if necessary
+    if (this.level === 2) {
+      hitboxSize = this.size * 1.5
+      //offsetY = -this.size; // Adjust for cat's body position
+    } else if (this.level === 3) {
+      offsetY = this.size * 0.2; // Adjust for dino's body position
+    }
+
+    this.hitbox = new Hitbox(
+      this.x - hitboxSize/2 + offsetX,
+      this.y - hitboxSize/2 + offsetY,
+      hitboxSize,
+      hitboxSize
+    );
   }
 
   show() {
@@ -344,22 +363,39 @@ class Player {
     this.y = constrain(this.y, this.size / 2, height - this.size / 2);
     this.updateHitbox();
   }
-  updateHitbox() {
-    this.hitbox.x = this.x - this.size/2;
-    this.hitbox.y = this.y - this.size/2;
-    this.hitbox.width = this.size;
-    this.hitbox.height = this.size;
-  }
+
 }
 
 class Food {
-  constructor(x, y, size, level) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.level = level;
-    this.hitbox = new Hitbox(x - size/2, y - size/2, size, size);
-  }
+    constructor(x, y, size, level) {
+      this.x = x;
+      this.y = y;
+      this.size = size;
+      this.level = level;
+      this.updateHitbox();
+    }
+  
+    updateHitbox() {
+      let hitboxSize = this.size*2;
+      let offsetX = 0;
+      let offsetY = 0;
+  
+      // Adjust offsets based on level
+      if (this.level === 2) {
+        offsetX = this.size*8; // Adjust for mouse position
+        offsetY = this.size*3; // Adjust for mouse position
+
+      } else if (this.level === 3) {
+        offsetY = -this.size * 0.1; // Adjust for leaf position
+      }
+  
+      this.hitbox = new Hitbox(
+        this.x - hitboxSize/2 + offsetX,
+        this.y - hitboxSize/2 + offsetY,
+        hitboxSize,
+        hitboxSize
+      );
+    }
 
   show() {
     push();
@@ -438,7 +474,7 @@ class Food {
 
   move() {
     this.x += 2;
-    this.hitbox.x += 2;
+    this.updateHitbox();
   }
 
   checkCollision() {
@@ -455,7 +491,39 @@ class Enemy {
     this.y = y;
     this.size = size;
     this.level = level;
-    this.hitbox = new Hitbox(x - size/2, y - size/2, size, size);
+    this.updateHitbox();
+  }
+
+  updateHitbox() {
+    let hitboxWidth = this.size;
+    let hitboxHeight = this.size;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // ORCA
+    if (this.level === 1) {
+      hitboxWidth *= 4; // Orca is wider
+      hitboxHeight *= 0.9; // Orca is not as tall
+      //CAR
+    } else if (this.level === 2) {
+      hitboxWidth *= 1.5; // Car is wider
+      hitboxHeight *= 0.8; // Car is not as tall
+      offsetY = -this.size * 0.3; // Adjust for car's position
+      offsetX = this.size; // Adjust for car's position
+      //METEOR
+    } else if (this.level === 3) {
+      offsetY = -this.size * 0.5; // Adjust for meteor's position
+      //LION
+    } else if (this.level === 4) {
+      offsetY = -this.size * 0.5; // Adjust for Leo's position
+    }
+
+    this.hitbox = new Hitbox(
+      this.x - hitboxWidth/2 + offsetX,
+      this.y - hitboxHeight/2 + offsetY,
+      hitboxWidth,
+      hitboxHeight
+    );
   }
 
   show() {
@@ -565,7 +633,7 @@ class Enemy {
 
   move() {
     this.x += 7;
-    this.hitbox.x += 7;
+    this.updateHitbox();
   }
 
   checkCollision() {
