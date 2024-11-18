@@ -214,35 +214,48 @@ class Player {
     this.y = height - height / 7;
     this.size = size;
     this.level = level;
+    this.hitbox = new Hitbox(this.x, this.y, this.size, this.size);
     this.updateHitbox();
   }
 
   updateHitbox() {
-    let hitboxSize = this.size * 0.8;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    // CAT
-    if (this.level === 2) {
-      hitboxSize = this.size * 1.5
-    //DINO
-    } else if (this.level === 3) {
-      offsetY = this.size * 0.2;
-      offsetx = this.size * 0.2; 
+    let hitboxWidth, hitboxHeight, offsetX, offsetY;
+    switch (this.level) {
+      case 1: // Seal
+        hitboxWidth = this.size * 0.8;
+        hitboxHeight = this.size * 0.6;
+        offsetX = 0;
+        offsetY = this.size * 0.1;
+        break;
+      case 2: // Cat
+        hitboxWidth = this.size*1.5;
+        hitboxHeight = this.size*1.5;
+        offsetX = 0;
+        offsetY = -this.size * 0.1;
+        break;
+      case 3: // Dino
+        hitboxWidth = this.size/3;
+        hitboxHeight = this.size*3;
+        offsetX = this.size*0.3;
+        offsetY = -this.size*1.3;
+        break;
+      case 4: // Giraffe
+        hitboxWidth = this.size/3;
+        hitboxHeight = this.size*3;
+        offsetX = -this.size*2.5;
+        offsetY = -this.size*1.3;
+        break;
+      default:
+        hitboxWidth = this.size;
+        hitboxHeight = this.size;
+        offsetX = 0;
+        offsetY = 0;
     }
-     //GIRAFFE
-    else if (this.level === 4) {
-      offsetY = this.size * 0.2;
-      offsetY = this.size * 0.2;
-
-    }
-
-    this.hitbox = new Hitbox(
-      this.x - hitboxSize/2 + offsetX,
-      this.y - hitboxSize/2 + offsetY,
-      hitboxSize,
-      hitboxSize
-    );
+    
+    this.hitbox.x = this.x - hitboxWidth / 2 + offsetX;
+    this.hitbox.y = this.y - hitboxHeight / 2 + offsetY;
+    this.hitbox.width = hitboxWidth;
+    this.hitbox.height = hitboxHeight;
   }
 
   show() {
@@ -371,7 +384,7 @@ class Player {
     this.x = constrain(this.x, this.size / 2, width - this.size / 2);
     this.y = constrain(this.y, this.size / 2, height - this.size / 2);
     this.updateHitbox();
-  }
+  }  
 
 }
 
@@ -395,11 +408,14 @@ class Food {
         offsetY = this.size*3; // Adjust for mouse position
       // Leaf
       } else if (this.level === 3) {
-        offsetY = -this.size * 0.1; // Adjust for leaf position
+        offsetX = this.size*7.8;
+        offsetY = this.size*8;
       }
        // Fruit
       else if (this.level === 4) {
-        offsetY = -this.size * 0.1; // Adjust for leaf position
+        hitboxSize = this.size*2;
+        offsetX = this.size*3.8;
+        offsetY = this.size*4;
       }
   
       this.hitbox = new Hitbox(
@@ -519,16 +535,17 @@ class Enemy {
       hitboxHeight *= 0.9; 
       //CAR
     } else if (this.level === 2) {
-      hitboxWidth *= 2; // Car is wider
-      hitboxHeight *= 0.8; // Car is not as tall
-      offsetY = -this.size * 0.8; // Adjust for car's position
-      offsetX = this.size*4; // Adjust for car's position
-      //METEOR
+      hitboxWidth *= 2; 
+      hitboxHeight *= 0.8; 
+      offsetY = -this.size * 0.8; 
+      offsetX = this.size*4; 
     } else if (this.level === 3) {
-      offsetY = -this.size * 0.5; // Adjust for meteor's position
-      //LION
+      offsetY = -this.size * 0.8; 
+      offsetX = this.size*4;  
+      //LION    
     } else if (this.level === 4) {
-      offsetY = -this.size * 0.5; // Adjust for Leo's position
+      offsetY =-this.size; 
+      offsetX = this.size*4;
     }
 
     this.hitbox = new Hitbox(
