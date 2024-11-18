@@ -34,7 +34,7 @@ function initializeGame() {
 }
 function drawHitboxes() {
   noFill();
-  stroke(255, 0, 0);
+  noStroke();
   rect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
   for (let f of food) {
     rect(f.hitbox.x, f.hitbox.y, f.hitbox.width, f.hitbox.height);
@@ -162,7 +162,7 @@ function showNextLevelScreen() {
 
 //wann Enemy
 function checkEnemySpawn() {
-  if (score >= 1 && !enemyActive) {
+  if (score >= 10 && !enemyActive) {
     enemyActive = true;
     enemy.x = -200;
   }
@@ -196,7 +196,7 @@ function spawnFood() {
 
 //Powerup
 function powerUp() {
-  player.size += 10;
+  player.size += 2;
   checkNextLevel();
 }
 
