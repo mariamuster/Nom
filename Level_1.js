@@ -156,6 +156,7 @@ function showNextLevelScreen() {
   text("CONTINUE", width / 2, height / 2 + 200);
 }
 
+//wann Enemy
 function checkEnemySpawn() {
   if (score >= 1 && !enemyActive) {
     enemyActive = true;
@@ -189,8 +190,9 @@ function spawnFood() {
   food.push(new Food(x, y, 10, currentLevel));
 }
 
+//Powerup
 function powerUp() {
-  player.size += 13;
+  player.size += 10;
   checkNextLevel();
 }
 
@@ -220,12 +222,19 @@ class Player {
     let offsetX = 0;
     let offsetY = 0;
 
-    // Adjust offsets based on level if necessary
+    // CAT
     if (this.level === 2) {
       hitboxSize = this.size * 1.5
-      //offsetY = -this.size; // Adjust for cat's body position
+    //DINO
     } else if (this.level === 3) {
-      offsetY = this.size * 0.2; // Adjust for dino's body position
+      offsetY = this.size * 0.2;
+      offsetx = this.size * 0.2; 
+    }
+     //GIRAFFE
+    else if (this.level === 4) {
+      offsetY = this.size * 0.2;
+      offsetY = this.size * 0.2;
+
     }
 
     this.hitbox = new Hitbox(
@@ -380,12 +389,16 @@ class Food {
       let offsetX = 0;
       let offsetY = 0;
   
-      // Adjust offsets based on level
+      // Mouse
       if (this.level === 2) {
         offsetX = this.size*8; // Adjust for mouse position
         offsetY = this.size*3; // Adjust for mouse position
-
+      // Leaf
       } else if (this.level === 3) {
+        offsetY = -this.size * 0.1; // Adjust for leaf position
+      }
+       // Fruit
+      else if (this.level === 4) {
         offsetY = -this.size * 0.1; // Adjust for leaf position
       }
   
@@ -502,14 +515,14 @@ class Enemy {
 
     // ORCA
     if (this.level === 1) {
-      hitboxWidth *= 4; // Orca is wider
-      hitboxHeight *= 0.9; // Orca is not as tall
+      hitboxWidth *= 4; 
+      hitboxHeight *= 0.9; 
       //CAR
     } else if (this.level === 2) {
-      hitboxWidth *= 1.5; // Car is wider
+      hitboxWidth *= 2; // Car is wider
       hitboxHeight *= 0.8; // Car is not as tall
-      offsetY = -this.size * 0.3; // Adjust for car's position
-      offsetX = this.size; // Adjust for car's position
+      offsetY = -this.size * 0.8; // Adjust for car's position
+      offsetX = this.size*4; // Adjust for car's position
       //METEOR
     } else if (this.level === 3) {
       offsetY = -this.size * 0.5; // Adjust for meteor's position
@@ -567,6 +580,7 @@ class Enemy {
 
   drawCar() {
     translate(this.x, -300);
+    scale(0.8)
     noStroke();
     fill(255, 0, 0);
     quad(130, 120, 280, 120, 310, 200, 100, 200);
@@ -633,6 +647,7 @@ class Enemy {
 
   move() {
     this.x += 7;
+    this.hitbox.x += 7;
     this.updateHitbox();
   }
 
