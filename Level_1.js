@@ -7,6 +7,7 @@ let enemy;
 let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
+let hasWon = false; // New variable to track win state
 
 let myFont;
 function preload() {
@@ -45,7 +46,7 @@ function drawHitboxes() {
 
 
 function draw() {
-  if (!gameOver && !nextLevel) {
+  if (!gameOver && !nextLevel && !hasWon) {
     drawLevel();
 
     for (let i = food.length - 1; i >= 0; i--) {
@@ -85,10 +86,13 @@ function draw() {
     textFont(myFont);
     textAlign(LEFT, TOP);
     text(`Score: ${score}`, 10, 10);
+    
   } else if (gameOver) {
     showGameOverScreen();
   } else if (nextLevel) {
     showNextLevelScreen();
+  } else if (hasWon) { // Check for win state
+    showWinScreen(); // Call win screen function
   }
 
   if (debugMode) {
@@ -199,9 +203,23 @@ function powerUp() {
 function checkNextLevel() {
   let playerArea = PI * sq(player.size / 2);
   let screenArea = width * height;
+  
   if (playerArea / screenArea > 0.7) {
-    nextLevel = true;
+    if (currentLevel >= 4) {
+      hasWon = true; // Set win state if level is 4 or higher
+    } else {
+      nextLevel = true; // Proceed to next level
+    }
   }
+}
+
+function showWinScreen() {
+  background(255, 0, 255); // Set background color for win screen
+  fill(255, 255, 0); // Set text color to white
+  textSize(50);
+  textFont(myFont);
+  textAlign(CENTER, CENTER);
+  text("YOU WIN!", width / 2, height / 2); // Display win message
 }
 
 function checkCollision(object1, object2) {
@@ -219,44 +237,37 @@ class Player {
   }
 
   updateHitbox() {
-    let hitboxWidth, hitboxHeight, offsetX, offsetY;
+    let hitboxWidth, hitboxHeight;
+  
     switch (this.level) {
       case 1: // Seal
-        hitboxWidth = this.size * 0.8;
-        hitboxHeight = this.size * 0.6;
-        offsetX = 0;
-        offsetY = this.size * 0.1;
+        hitboxWidth = this.size * 0.8; // Width for seal
+        hitboxHeight = this.size * 0.6; // Height for seal
         break;
       case 2: // Cat
-        hitboxWidth = this.size*1.5;
-        hitboxHeight = this.size*1.5;
-        offsetX = 0;
-        offsetY = -this.size * 0.1;
+        hitboxWidth = this.size * 1.5; // Width for cat
+        hitboxHeight = this.size * 1.5; // Height for cat
         break;
       case 3: // Dino
-        hitboxWidth = this.size/3;
-        hitboxHeight = this.size*3;
-        offsetX = this.size*0.3;
-        offsetY = -this.size*1.3;
+        hitboxWidth = this.size; // Adjust width for dino
+        hitboxHeight = this.size; // Adjust height for dino
         break;
       case 4: // Giraffe
-        hitboxWidth = this.size/3;
-        hitboxHeight = this.size*3;
-        offsetX = -this.size*2.5;
-        offsetY = -this.size*1.3;
+        hitboxWidth = this.size * 1.5; // Adjust width for giraffe
+        hitboxHeight = this.size * 1.5; // Adjust height for giraffe
         break;
       default:
         hitboxWidth = this.size;
         hitboxHeight = this.size;
-        offsetX = 0;
-        offsetY = 0;
     }
-    
-    this.hitbox.x = this.x - hitboxWidth / 2 + offsetX;
-    this.hitbox.y = this.y - hitboxHeight / 2 + offsetY;
+  
+    // Center the hitbox around the player's position
+    this.hitbox.x = this.x - hitboxWidth / 2; 
+    this.hitbox.y = this.y - hitboxHeight / 2; 
     this.hitbox.width = hitboxWidth;
     this.hitbox.height = hitboxHeight;
   }
+  
 
   show() {
     push();
@@ -329,43 +340,97 @@ class Player {
   }
 
   drawDino() {
-    noStroke();
-    fill(0, 80, 0);
-    ellipse(30, -270, 40, 30);
-    ellipse(-120, -80, 150, 100);
-    quad(30, -260, 10, -270, -70, -100, -45, -80);
-    rect(-190, -70, 20, 80);
-    rect(-67, -70, 20, 80);
-    triangle(-300, 0, -190, -60, -180, -110);
-    fill(255);
-    ellipse(30, -270, 15);
-    fill(0);
-    ellipse(30, -270, 10);
+  scale(0.5)
+  translate(-200, -200)
+     //Krone
+  noStroke(0);
+  fill(0, 165, 45);
+  ellipse(100, 220, 100);
+  ellipse(90, 160, 100);
+  ellipse(110, 100, 100);
+  ellipse(200, 70, 120);
+  ellipse(300, 220, 100);
+  ellipse(310, 160, 100);
+  ellipse(290, 100, 100);
+  ellipse(200, 170, 250, 220);
+  //Kopf
+  stroke(1);
+  fill(0, 124, 78);
+  ellipse(200, 200, 200, 180);
+  //Schnauze
+  fill(0, 165, 45);
+  ellipse(200, 260, 100, 80);
+  //Augen, Nase
+  fill(0);
+  ellipse(140, 210, 20);
+  ellipse(260, 210, 20);
+  ellipse(235, 250, 10);
+  ellipse(165, 250, 10);
+
+  //Mund
+  noFill();
+  strokeWeight(2);
+  arc(200, 260, 80, 50, 0, PI);
+  //Horn
+  fill(255);
+  noStroke();
+  triangle(170, 235, 200, 160, 230, 235);
+  triangle(120, 160, 110, 110, 160, 130);
+  triangle(280, 160, 290, 110, 240, 130);
   }
 
   drawGiraffe() {
+    translate(-200, -200)
+    noStroke();
+    fill(189, 108, 0);
+    //Horn
+    ellipse(170, 90, 25);
+    ellipse(220, 90, 25);
+    rect(162, 90, 15, 50);
+    rect(212, 90, 15, 50);
+  
+    //Ohr
+    ellipse(280, 150, 80, 50);
+    ellipse(120, 150, 80, 50);
+  
+    fill(255, 176, 49);
+    //Kopf
+    ellipse(200, 200, 150, 100);
+    triangle(135, 220, 200, 300, 265, 220);
+  
+    fill(224, 130, 6);
+  
+    triangle(155, 150, 200, 290, 245, 150);
+    quad(130, 180, 168, 135, 270, 180, 232, 135);
+    ellipse(200, 150, 80, 50);
+  
+    //Nase
+    fill(189, 108, 0);
+    ellipse(200, 275, 70, 60);
+  
+    //Augen, Nase
+    fill(0);
+    ellipse(142, 195, 35);
+    ellipse(257, 195, 35);
+  
+    ellipse(210, 265, 10, 15);
+    ellipse(190, 265, 10, 15);
+  
+    fill(255);
+    ellipse(138, 185, 5);
+    ellipse(252, 185, 5);
+  
+    //Mund
     stroke(0);
-    fill(254, 158, 130);
-    ellipse(-260, -260, 60, 40);
-    quad(-220, -250, -200, -265, -220, -273, -240, -265);
-    rect(-260, -260, 30, 250);
-    rect(-260, -15, 10, 100);
-    rect(-240, -15, 10, 100);
-    rect(-170, -15, 10, 100);
-    rect(-150, -15, 10, 100);
-    push();
-    strokeWeight(4);
-    line(-144, -30, -120, 0);
-    pop();
-    quad(-100, 30, -105, 10, -120, 0, -115, 20);
-    rect(-250, -291, 7, 15);
-    ellipse(-247, -293, 12);
-    ellipse(-260, -260, 60, 40);
-    ellipse(-200, -15, 120, 90);
-    fill(200);
-    ellipse(-260, -260, 20);
-    fill(10);
-    ellipse(-260, -260, 10);
+    strokeWeight(2);
+    noFill(0);
+    arc(200, 285, 30, 20, 0, PI);
+  
+    //Wimpern
+    line(110, 190, 140, 180);
+    line(110, 195, 140, 180);
+    line(290, 190, 260, 180);
+    line(290, 195, 260, 180);
   }
 
   move() {
