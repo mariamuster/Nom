@@ -162,7 +162,7 @@ function showNextLevelScreen() {
 
 //wann Enemy
 function checkEnemySpawn() {
-  if (score >= 10 && !enemyActive) {
+  if (score >= 15 && !enemyActive) {
     enemyActive = true;
     enemy.x = -200;
   }
@@ -196,7 +196,7 @@ function spawnFood() {
 
 //Powerup
 function powerUp() {
-  player.size += 2;
+  player.size += 4;
   checkNextLevel();
 }
 
