@@ -8,6 +8,7 @@ let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
 let hasWon = false; // New variable to track win state
+let debugMode = false;
 
 let myFont;
 function preload() {
@@ -35,15 +36,24 @@ function initializeGame() {
 function drawHitboxes() {
   noFill();
   noStroke();
-  rect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
+  rect(
+    player.hitbox.x,
+    player.hitbox.y,
+    player.hitbox.width,
+    player.hitbox.height
+  );
   for (let f of food) {
     rect(f.hitbox.x, f.hitbox.y, f.hitbox.width, f.hitbox.height);
   }
   if (enemyActive) {
-    rect(enemy.hitbox.x, enemy.hitbox.y, enemy.hitbox.width, enemy.hitbox.height);
+    rect(
+      enemy.hitbox.x,
+      enemy.hitbox.y,
+      enemy.hitbox.width,
+      enemy.hitbox.height
+    );
   }
 }
-
 
 function draw() {
   if (!gameOver && !nextLevel && !hasWon) {
@@ -66,7 +76,6 @@ function draw() {
       if (enemyActive && food[i].enemyCollision()) {
         food.splice(i, 1);
       }
-    
     }
 
     player.show();
@@ -86,12 +95,12 @@ function draw() {
     textFont(myFont);
     textAlign(LEFT, TOP);
     text(`Score: ${score}`, 10, 10);
-    
   } else if (gameOver) {
     showGameOverScreen();
   } else if (nextLevel) {
     showNextLevelScreen();
-  } else if (hasWon) { // Check for win state
+  } else if (hasWon) {
+    // Check for win state
     showWinScreen(); // Call win screen function
   }
 
@@ -103,30 +112,44 @@ function draw() {
 function drawLevel() {
   switch (currentLevel) {
     case 1:
-      background(0, 95, 228);
+      background(255, 200, 228);
+
       break;
     case 2:
-      background(0, 255, 156);
+      background(0, 160, 20);
+
       break;
     case 3:
-      background(255, 200, 228);
+      background(0, 95, 228);
       break;
     case 4:
-      background(0, 160, 20);
+      background(0, 255, 156);
       break;
+
+      case 4:
+      background(0, 255, 156);
+      break;
+
+      case 4:
+      background(0, 255, 156);
+      break;
+
   }
 }
 
 function getScoreColor() {
   switch (currentLevel) {
     case 1:
-      return color(255);
-    case 2:
-      return color(255, 0, 0);
-    case 3:
       return color(0, 0, 255);
-    case 4:
+
+    case 2:
       return color(255, 255, 0);
+
+    case 3:
+      return color(255);
+
+    case 4:
+      return color(255, 0, 0);
   }
 }
 
@@ -139,7 +162,7 @@ function showGameOverScreen() {
   text("GAME OVER", width / 2, height / 2);
   textSize(20);
   text(`Final Score: ${score}`, width / 2, height / 2 + 60);
-  
+
   fill(0, 255, 0);
   textSize(30);
   text("RESTART", width / 2, height / 2 + 200);
@@ -154,7 +177,7 @@ function showNextLevelScreen() {
   text("NEXT LEVEL", width / 2, height / 2);
   textSize(20);
   text(`Score: ${score}`, width / 2, height / 2 + 60);
-  
+
   fill(0, 0, 255);
   textSize(30);
   text("CONTINUE", width / 2, height / 2 + 200);
@@ -203,7 +226,7 @@ function powerUp() {
 function checkNextLevel() {
   let playerArea = PI * sq(player.size / 2);
   let screenArea = width * height;
-  
+
   if (playerArea / screenArea > 0.7) {
     if (currentLevel >= 4) {
       hasWon = true; // Set win state if level is 4 or higher
@@ -238,36 +261,39 @@ class Player {
 
   updateHitbox() {
     let hitboxWidth, hitboxHeight;
-  
+
     switch (this.level) {
-      case 1: // Seal
+      case 1: // Dino
+        hitboxWidth = this.size; // Adjust width for dino
+        hitboxHeight = this.size; // Adjust height for dino
+
+        break;
+      case 2: // Giraffe
+        hitboxWidth = this.size * 1.5; // Adjust width for giraffe
+        hitboxHeight = this.size * 1.5; // Adjust height for giraffe
+
+        break;
+      case 3:
+        // Seal
         hitboxWidth = this.size * 0.8; // Width for seal
         hitboxHeight = this.size * 0.6; // Height for seal
         break;
-      case 2: // Cat
+      case 4:
+        // Cat
         hitboxWidth = this.size * 1.5; // Width for cat
         hitboxHeight = this.size * 1.5; // Height for cat
-        break;
-      case 3: // Dino
-        hitboxWidth = this.size; // Adjust width for dino
-        hitboxHeight = this.size; // Adjust height for dino
-        break;
-      case 4: // Giraffe
-        hitboxWidth = this.size * 1.5; // Adjust width for giraffe
-        hitboxHeight = this.size * 1.5; // Adjust height for giraffe
         break;
       default:
         hitboxWidth = this.size;
         hitboxHeight = this.size;
     }
-  
+
     // Center the hitbox around the player's position
-    this.hitbox.x = this.x - hitboxWidth / 2; 
-    this.hitbox.y = this.y - hitboxHeight / 2; 
+    this.hitbox.x = this.x - hitboxWidth / 2;
+    this.hitbox.y = this.y - hitboxHeight / 2;
     this.hitbox.width = hitboxWidth;
     this.hitbox.height = hitboxHeight;
   }
-  
 
   show() {
     push();
@@ -276,16 +302,20 @@ class Player {
 
     switch (this.level) {
       case 1:
-        this.drawSeal();
+        this.drawDino();
+
         break;
       case 2:
-        this.drawCat();
+        this.drawGiraffe();
+
         break;
       case 3:
-        this.drawDino();
+        this.drawSeal();
+
         break;
       case 4:
-        this.drawGiraffe();
+        this.drawCat();
+
         break;
     }
 
@@ -340,47 +370,47 @@ class Player {
   }
 
   drawDino() {
-  scale(0.5)
-  translate(-200, -200)
-     //Krone
-  noStroke(0);
-  fill(0, 165, 45);
-  ellipse(100, 220, 100);
-  ellipse(90, 160, 100);
-  ellipse(110, 100, 100);
-  ellipse(200, 70, 120);
-  ellipse(300, 220, 100);
-  ellipse(310, 160, 100);
-  ellipse(290, 100, 100);
-  ellipse(200, 170, 250, 220);
-  //Kopf
-  stroke(1);
-  fill(0, 124, 78);
-  ellipse(200, 200, 200, 180);
-  //Schnauze
-  fill(0, 165, 45);
-  ellipse(200, 260, 100, 80);
-  //Augen, Nase
-  fill(0);
-  ellipse(140, 210, 20);
-  ellipse(260, 210, 20);
-  ellipse(235, 250, 10);
-  ellipse(165, 250, 10);
+    scale(0.5);
+    translate(-200, -200);
+    //Krone
+    noStroke(0);
+    fill(0, 165, 45);
+    ellipse(100, 220, 100);
+    ellipse(90, 160, 100);
+    ellipse(110, 100, 100);
+    ellipse(200, 70, 120);
+    ellipse(300, 220, 100);
+    ellipse(310, 160, 100);
+    ellipse(290, 100, 100);
+    ellipse(200, 170, 250, 220);
+    //Kopf
+    stroke(1);
+    fill(0, 124, 78);
+    ellipse(200, 200, 200, 180);
+    //Schnauze
+    fill(0, 165, 45);
+    ellipse(200, 260, 100, 80);
+    //Augen, Nase
+    fill(0);
+    ellipse(140, 210, 20);
+    ellipse(260, 210, 20);
+    ellipse(235, 250, 10);
+    ellipse(165, 250, 10);
 
-  //Mund
-  noFill();
-  strokeWeight(2);
-  arc(200, 260, 80, 50, 0, PI);
-  //Horn
-  fill(255);
-  noStroke();
-  triangle(170, 235, 200, 160, 230, 235);
-  triangle(120, 160, 110, 110, 160, 130);
-  triangle(280, 160, 290, 110, 240, 130);
+    //Mund
+    noFill();
+    strokeWeight(2);
+    arc(200, 260, 80, 50, 0, PI);
+    //Horn
+    fill(255);
+    noStroke();
+    triangle(170, 235, 200, 160, 230, 235);
+    triangle(120, 160, 110, 110, 160, 130);
+    triangle(280, 160, 290, 110, 240, 130);
   }
 
   drawGiraffe() {
-    translate(-200, -200)
+    translate(-200, -200);
     noStroke();
     fill(189, 108, 0);
     //Horn
@@ -388,44 +418,44 @@ class Player {
     ellipse(220, 90, 25);
     rect(162, 90, 15, 50);
     rect(212, 90, 15, 50);
-  
+
     //Ohr
     ellipse(280, 150, 80, 50);
     ellipse(120, 150, 80, 50);
-  
+
     fill(255, 176, 49);
     //Kopf
     ellipse(200, 200, 150, 100);
     triangle(135, 220, 200, 300, 265, 220);
-  
+
     fill(224, 130, 6);
-  
+
     triangle(155, 150, 200, 290, 245, 150);
     quad(130, 180, 168, 135, 270, 180, 232, 135);
     ellipse(200, 150, 80, 50);
-  
+
     //Nase
     fill(189, 108, 0);
     ellipse(200, 275, 70, 60);
-  
+
     //Augen, Nase
     fill(0);
     ellipse(142, 195, 35);
     ellipse(257, 195, 35);
-  
+
     ellipse(210, 265, 10, 15);
     ellipse(190, 265, 10, 15);
-  
+
     fill(255);
     ellipse(138, 185, 5);
     ellipse(252, 185, 5);
-  
+
     //Mund
     stroke(0);
     strokeWeight(2);
     noFill(0);
     arc(200, 285, 30, 20, 0, PI);
-  
+
     //Wimpern
     line(110, 190, 140, 180);
     line(110, 195, 140, 180);
@@ -449,47 +479,51 @@ class Player {
     this.x = constrain(this.x, this.size / 2, width - this.size / 2);
     this.y = constrain(this.y, this.size / 2, height - this.size / 2);
     this.updateHitbox();
-  }  
-
+  }
 }
 
 class Food {
-    constructor(x, y, size, level) {
-      this.x = x;
-      this.y = y;
-      this.size = size;
-      this.level = level;
-      this.updateHitbox();
+  constructor(x, y, size, level) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.level = level;
+    this.updateHitbox();
+  }
+
+  updateHitbox() {
+    let hitboxSize = this.size * 2;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Leaf
+    if (this.level === 1) {
+      offsetX = this.size * 7.8;
+      offsetY = this.size * 8;
+      // Friut
+    } else if (this.level === 2) {
+      hitboxSize = this.size * 2;
+      offsetX = this.size * 3.8;
+      offsetY = this.size * 4;
     }
-  
-    updateHitbox() {
-      let hitboxSize = this.size*2;
-      let offsetX = 0;
-      let offsetY = 0;
-  
-      // Mouse
-      if (this.level === 2) {
-        offsetX = this.size*8; // Adjust for mouse position
-        offsetY = this.size*3; // Adjust for mouse position
-      // Leaf
-      } else if (this.level === 3) {
-        offsetX = this.size*7.8;
-        offsetY = this.size*8;
-      }
-       // Fruit
-      else if (this.level === 4) {
-        hitboxSize = this.size*2;
-        offsetX = this.size*3.8;
-        offsetY = this.size*4;
-      }
-  
-      this.hitbox = new Hitbox(
-        this.x - hitboxSize/2 + offsetX,
-        this.y - hitboxSize/2 + offsetY,
-        hitboxSize,
-        hitboxSize
-      );
+    // Fish
+    else if (this.level === 3) {
+      offsetX = 0;
+      offsetY = 0;
     }
+    // Mouse
+    else if (this.level === 4) {
+      offsetX = this.size * 8;
+      offsetY = this.size * 3;
+    }
+
+    this.hitbox = new Hitbox(
+      this.x - hitboxSize / 2 + offsetX,
+      this.y - hitboxSize / 2 + offsetY,
+      hitboxSize,
+      hitboxSize
+    );
+  }
 
   show() {
     push();
@@ -498,16 +532,20 @@ class Food {
 
     switch (this.level) {
       case 1:
-        this.drawFish();
+        this.drawLeaf();
+
         break;
       case 2:
-        this.drawMouse();
+        this.drawFruit();
+
         break;
       case 3:
-        this.drawLeaf();
+        this.drawFish();
+
         break;
       case 4:
-        this.drawFruit();
+        this.drawMouse();
+
         break;
     }
 
@@ -594,28 +632,29 @@ class Enemy {
     let offsetX = 0;
     let offsetY = 0;
 
-    // ORCA
+    // METEOR
     if (this.level === 1) {
-      hitboxWidth *= 4; 
-      hitboxHeight *= 0.9; 
-      //CAR
+      offsetY = -this.size * 0.8;
+      offsetX = this.size * 4;
+      //LION
     } else if (this.level === 2) {
-      hitboxWidth *= 2; 
-      hitboxHeight *= 0.8; 
-      offsetY = -this.size * 0.8; 
-      offsetX = this.size*4; 
+      offsetY = -this.size;
+      offsetX = this.size * 4;
+      //ORCA
     } else if (this.level === 3) {
-      offsetY = -this.size * 0.8; 
-      offsetX = this.size*4;  
-      //LION    
+      hitboxWidth *= 4;
+      hitboxHeight *= 0.9;
+      //CAR
     } else if (this.level === 4) {
-      offsetY =-this.size; 
-      offsetX = this.size*4;
+      hitboxWidth *= 2;
+      hitboxHeight *= 0.8;
+      offsetY = -this.size * 0.8;
+      offsetX = this.size * 4;
     }
 
     this.hitbox = new Hitbox(
-      this.x - hitboxWidth/2 + offsetX,
-      this.y - hitboxHeight/2 + offsetY,
+      this.x - hitboxWidth / 2 + offsetX,
+      this.y - hitboxHeight / 2 + offsetY,
       hitboxWidth,
       hitboxHeight
     );
@@ -628,16 +667,16 @@ class Enemy {
 
     switch (this.level) {
       case 1:
-        this.drawOrca();
-        break;
-      case 2:
-        this.drawCar();
-        break;
-      case 3:
         this.drawMeteor();
         break;
-      case 4:
+      case 2:
         this.drawLion();
+        break;
+      case 3:
+        this.drawOrca();
+        break;
+      case 4:
+        this.drawCar();
         break;
     }
 
@@ -662,7 +701,7 @@ class Enemy {
 
   drawCar() {
     translate(this.x, -300);
-    scale(0.8)
+    scale(0.8);
     noStroke();
     fill(255, 0, 0);
     quad(130, 120, 280, 120, 310, 200, 100, 200);
@@ -747,9 +786,34 @@ class Hitbox {
   }
 
   intersects(other) {
-    return !(this.x + this.width < other.x ||
-             other.x + other.width < this.x ||
-             this.y + this.height < other.y ||
-             other.y + other.height < this.y);
+    return !(
+      this.x + this.width < other.x ||
+      other.x + other.width < this.x ||
+      this.y + this.height < other.y ||
+      other.y + other.height < this.y
+    );
+  }
+}
+
+function drawHitboxes() {
+  noFill();
+  stroke(255, 0, 0); // Red color for hitboxes
+  strokeWeight(2);   // Thicker lines for visibility
+  rect(
+    player.hitbox.x,
+    player.hitbox.y,
+    player.hitbox.width,
+    player.hitbox.height
+  );
+  for (let f of food) {
+    rect(f.hitbox.x, f.hitbox.y, f.hitbox.width, f.hitbox.height);
+  }
+  if (enemyActive) {
+    rect(
+      enemy.hitbox.x,
+      enemy.hitbox.y,
+      enemy.hitbox.width,
+      enemy.hitbox.height
+    );
   }
 }
