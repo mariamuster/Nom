@@ -126,14 +126,13 @@ function drawLevel() {
       background(0, 255, 156);
       break;
 
-      case 4:
+    case 4:
       background(0, 255, 156);
       break;
 
-      case 4:
-      background(0, 255, 156);
+    case 5:
+      background(150, 229, 85);
       break;
-
   }
 }
 
@@ -150,6 +149,9 @@ function getScoreColor() {
 
     case 4:
       return color(255, 0, 0);
+
+    case 5:
+      return color(255, 0, 255);
   }
 }
 
@@ -203,7 +205,7 @@ function mousePressed() {
     if (continueButton.intersects(new Hitbox(mouseX, mouseY, 1, 1))) {
       nextLevel = false;
       currentLevel++;
-      if (currentLevel > 4) {
+      if (currentLevel > 5) {
         currentLevel = 1;
       }
       initializeGame();
@@ -228,7 +230,7 @@ function checkNextLevel() {
   let screenArea = width * height;
 
   if (playerArea / screenArea > 0.7) {
-    if (currentLevel >= 4) {
+    if (currentLevel >= 5) {
       hasWon = true; // Set win state if level is 4 or higher
     } else {
       nextLevel = true; // Proceed to next level
@@ -283,6 +285,12 @@ class Player {
         hitboxWidth = this.size * 1.5; // Width for cat
         hitboxHeight = this.size * 1.5; // Height for cat
         break;
+      case 5:
+        // Bird
+        hitboxWidth = this.size * 4;
+        hitboxHeight = this.size * 10;
+        break;
+
       default:
         hitboxWidth = this.size;
         hitboxHeight = this.size;
@@ -303,19 +311,18 @@ class Player {
     switch (this.level) {
       case 1:
         this.drawDino();
-
         break;
       case 2:
         this.drawGiraffe();
-
         break;
       case 3:
         this.drawSeal();
-
         break;
       case 4:
         this.drawCat();
-
+        break;
+      case 5:
+        this.drawBird();
         break;
     }
 
@@ -418,49 +425,60 @@ class Player {
     ellipse(220, 90, 25);
     rect(162, 90, 15, 50);
     rect(212, 90, 15, 50);
-
     //Ohr
     ellipse(280, 150, 80, 50);
     ellipse(120, 150, 80, 50);
-
     fill(255, 176, 49);
     //Kopf
     ellipse(200, 200, 150, 100);
     triangle(135, 220, 200, 300, 265, 220);
-
     fill(224, 130, 6);
-
     triangle(155, 150, 200, 290, 245, 150);
     quad(130, 180, 168, 135, 270, 180, 232, 135);
     ellipse(200, 150, 80, 50);
-
     //Nase
     fill(189, 108, 0);
     ellipse(200, 275, 70, 60);
-
     //Augen, Nase
     fill(0);
     ellipse(142, 195, 35);
     ellipse(257, 195, 35);
-
     ellipse(210, 265, 10, 15);
     ellipse(190, 265, 10, 15);
-
     fill(255);
     ellipse(138, 185, 5);
     ellipse(252, 185, 5);
-
     //Mund
     stroke(0);
     strokeWeight(2);
     noFill(0);
     arc(200, 285, 30, 20, 0, PI);
-
     //Wimpern
     line(110, 190, 140, 180);
     line(110, 195, 140, 180);
     line(290, 190, 260, 180);
     line(290, 195, 260, 180);
+  }
+
+  drawBird() {
+    translate(-120, -120);
+    scale(0.6);
+    noStroke();
+    fill(0, 150, 255);
+    rect(90, 100, 226, 200, 90, 90, 80, 80); //Kopf
+    fill(223, 217, 207);
+    quad(265, 200, 300, 200, 220, 250, 185, 250); //Braue
+    quad(105, 200, 140, 200, 220, 250, 185, 250); //Braue
+    fill(255, 162, 1);
+    quad(200, 220, 230, 250, 200, 270, 170, 250); //Schnabel
+
+    fill(0);
+    ellipse(140, 225, 40); //Auge s
+    ellipse(270, 225, 40); //Auge s
+    fill(255);
+
+    ellipse(142, 223, 20); //Auge w
+    ellipse(268, 223, 20); //Auge w
   }
 
   move() {
@@ -516,6 +534,11 @@ class Food {
       offsetX = this.size * 8;
       offsetY = this.size * 3;
     }
+    // Worm
+    else if (this.level === 5) {
+      offsetX = this.size * 7;
+      offsetY = this.size * 7;
+    }
 
     this.hitbox = new Hitbox(
       this.x - hitboxSize / 2 + offsetX,
@@ -533,19 +556,18 @@ class Food {
     switch (this.level) {
       case 1:
         this.drawLeaf();
-
         break;
       case 2:
         this.drawFruit();
-
         break;
       case 3:
         this.drawFish();
-
         break;
       case 4:
         this.drawMouse();
-
+        break;
+      case 5:
+        this.drawWorm();
         break;
     }
 
@@ -604,6 +626,41 @@ class Food {
     ellipse(94, 112, 7);
   }
 
+  drawWorm() {
+    scale(0.6);
+    noStroke();
+    fill(255, 154, 139);
+    ellipse(310, 290, 55); //Kopf
+    noFill();
+    strokeWeight(40);
+    stroke(255, 154, 139);
+    arc(170, 300, 80, 130, PI, 0); //Mitte
+    line(210, 300, 300, 300); //Rechts
+    line(80, 300, 130, 300); //Links
+    fill(0);
+    noStroke();
+    ellipse(307, 285, 13); //AugeLi
+    ellipse(327, 285, 13); //AugeRe
+    noFill();
+    stroke(255, 0, 0);
+    strokeWeight(6);
+    arc(320, 300, 22, 15, 0, PI); //Mund
+    strokeWeight(8);
+    stroke(0, 188, 96);
+    line(100, 285, 100, 315); //Streifen
+    line(80, 285, 80, 315); //Streifen
+    line(240, 285, 240, 315); //Streifen
+    line(260, 285, 260, 315); //Streifen
+    line(280, 285, 280, 315); //Streifen
+    line(230, 285, 200, 315); //Streifen
+    line(221, 268, 192, 285); //Streifen
+    line(210, 242, 185, 265); //Streifen
+    line(170, 220, 170, 252); //Streifen
+    line(132, 240, 155, 265); //Streifen
+    line(120, 268, 148, 285); //Streifen
+    line(115, 282, 138, 315); //Streifen
+  }
+
   move() {
     this.x += 2;
     this.updateHitbox();
@@ -650,6 +707,12 @@ class Enemy {
       hitboxHeight *= 0.8;
       offsetY = -this.size * 0.8;
       offsetX = this.size * 4;
+      //WINDOW
+    } else if (this.level === 5) {
+      hitboxHeight = this.size * 2.3;
+      hitboxWidth = this.size * 1.5;
+      offsetY = -this.size / 1.6;
+      offsetX = this.size;
     }
 
     this.hitbox = new Hitbox(
@@ -663,7 +726,6 @@ class Enemy {
   show() {
     push();
     translate(this.x, this.y);
-    //scale(this.size / 50);
 
     switch (this.level) {
       case 1:
@@ -677,6 +739,9 @@ class Enemy {
         break;
       case 4:
         this.drawCar();
+        break;
+      case 5:
+        this.drawWindow();
         break;
     }
 
@@ -765,6 +830,29 @@ class Enemy {
     arc(210, 245, 20, 20, 0, PI + QUARTER_PI);
     arc(190, 245, 20, 20, -PI + QUARTER_PI * 3, HALF_PI + QUARTER_PI * 2);
   }
+  drawWindow() {
+    translate(0, -200);
+    scale(0.8);
+    noStroke(0);
+    fill(31, 4, 0);
+    rect(20, 20, 230, 300); //Rahmen aussen
+    fill(0, 215, 255);
+    stroke(51, 24, 0);
+    rect(40, 40, 190, 260); //Himmel
+    noStroke();
+    fill(255);
+    ellipse(100, 80, 60); //Wolke
+    ellipse(130, 90, 40); //Wolke
+    ellipse(112, 100, 50); //Wolke
+    ellipse(85, 92, 40); //Wolke
+    ellipse(120, 75, 40); //Wolke
+
+    noFill();
+    stroke(51, 24, 0);
+    strokeWeight(12);
+    line(135, 39, 135, 302); //Kreuz
+    line(39, 180, 232, 180); //Kreuz
+  }
 
   move() {
     this.x += 7;
@@ -798,7 +886,7 @@ class Hitbox {
 function drawHitboxes() {
   noFill();
   stroke(255, 0, 0); // Red color for hitboxes
-  strokeWeight(2);   // Thicker lines for visibility
+  strokeWeight(2); // Thicker lines for visibility
   rect(
     player.hitbox.x,
     player.hitbox.y,
