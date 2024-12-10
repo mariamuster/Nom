@@ -8,7 +8,7 @@ let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
 let hasWon = false; 
-let debugMode = true;
+let debugMode = false;
 
 let myFont;
 function preload() {
