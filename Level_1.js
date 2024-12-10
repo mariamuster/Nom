@@ -133,6 +133,14 @@ function drawLevel() {
     case 5:
       background(150, 229, 85);
       break;
+
+    case 6:
+      background(150, 129, 241);
+      break;
+
+    case 7:
+      background(255, 152, 123);
+      break;
   }
 }
 
@@ -152,6 +160,12 @@ function getScoreColor() {
 
     case 5:
       return color(255, 0, 255);
+
+    case 6:
+      return color(0, 255, 0);
+
+    case 7:
+      return color(0, 181, 255);
   }
 }
 
@@ -205,7 +219,7 @@ function mousePressed() {
     if (continueButton.intersects(new Hitbox(mouseX, mouseY, 1, 1))) {
       nextLevel = false;
       currentLevel++;
-      if (currentLevel > 5) {
+      if (currentLevel > 7) {
         currentLevel = 1;
       }
       initializeGame();
@@ -230,7 +244,7 @@ function checkNextLevel() {
   let screenArea = width * height;
 
   if (playerArea / screenArea > 0.7) {
-    if (currentLevel >= 5) {
+    if (currentLevel >= 7) {
       hasWon = true; // Set win state if level is 4 or higher
     } else {
       nextLevel = true; // Proceed to next level
@@ -266,29 +280,39 @@ class Player {
 
     switch (this.level) {
       case 1: // Dino
-        hitboxWidth = this.size; // Adjust width for dino
-        hitboxHeight = this.size; // Adjust height for dino
+        hitboxWidth = this.size;
+        hitboxHeight = this.size;
 
         break;
       case 2: // Giraffe
-        hitboxWidth = this.size * 1.5; // Adjust width for giraffe
-        hitboxHeight = this.size * 1.5; // Adjust height for giraffe
-
+        hitboxWidth = this.size * 1.5;
+        hitboxHeight = this.size * 1.5;
         break;
       case 3:
         // Seal
-        hitboxWidth = this.size * 0.8; // Width for seal
-        hitboxHeight = this.size * 0.6; // Height for seal
+        hitboxWidth = this.size * 0.8;
+        hitboxHeight = this.size * 0.6;
         break;
       case 4:
         // Cat
-        hitboxWidth = this.size * 1.5; // Width for cat
-        hitboxHeight = this.size * 1.5; // Height for cat
+        hitboxWidth = this.size * 1.5;
+        hitboxHeight = this.size * 1.5;
         break;
       case 5:
         // Bird
         hitboxWidth = this.size * 4;
         hitboxHeight = this.size * 10;
+        break;
+
+      case 6:
+        // Hoover
+        hitboxWidth = this.size * 2;
+        hitboxHeight = this.size / 2;
+        break;
+
+      case 7: // Sofa
+        hitboxWidth = this.size * 3;
+        hitboxHeight = this.size * 1.3;
         break;
 
       default:
@@ -323,6 +347,12 @@ class Player {
         break;
       case 5:
         this.drawBird();
+        break;
+      case 6:
+        this.drawHoover();
+        break;
+      case 7:
+        this.drawSofa();
         break;
     }
 
@@ -480,6 +510,56 @@ class Player {
     ellipse(142, 223, 20); //Auge w
     ellipse(268, 223, 20); //Auge w
   }
+  drawHoover() {
+    push();
+    angleMode(RADIANS);
+
+    translate(-120, -120);
+    stroke(100);
+    strokeWeight(10);
+    noFill();
+    line(202, 55, 85, 55);
+    stroke(0);
+    line(40, 55, 100, 55);
+    arc(40, 80, 50, 50, HALF_PI, -TWO_PI - HALF_PI);
+    line(42, 105, 173, 105);
+    arc(175, 145, 80, 80, -TWO_PI - HALF_PI, HALF_PI);
+    line(175, 185, 145, 185);
+
+    //Kopf
+    stroke(0);
+    strokeWeight(1);
+    fill(100);
+    rect(230, 20, 10, 70);
+    fill(20);
+    rect(220, 20, 10, 70, 20, 0, 0, 20);
+    rect(205, 30, 18, 50, 10, 0, 0, 10);
+
+    //Body
+    fill(200, 200, 2);
+    noStroke();
+    rect(50, 150, 100, 70, 0, 50, 50, 0);
+    fill(0);
+    ellipse(125, 185, 20);
+    rect(65, 165, 20, 40);
+    pop();
+  }
+
+  drawSofa() {
+    translate(width / 40 - 200, -70);
+    fill(0, 128, 0);
+    stroke(0);
+    strokeWeight(4);
+    rect(32, 140, 15, 20); //Fuss
+    rect(312, 140, 15, 20); //Fuss
+    rect(50, 20, 130, 70, 10, 10, 0, 0); //RückenkissenL
+    rect(180, 20, 130, 70, 10, 10, 0, 0); //RückenkissenR
+    rect(50, 90, 130, 25, 0, 10, 0, 0); //SitzkissenL
+    rect(180, 90, 130, 25, 10, 0, 0, 0); //SitzkissenR
+    rect(50, 115, 260, 20); //Unten
+    rect(20, 60, 40, 85, 10); //ArmlehneL
+    rect(300, 60, 40, 85, 10); //ArmlehneR
+  }
 
   move() {
     if (keyIsDown(UP_ARROW)) {
@@ -523,23 +603,29 @@ class Food {
       hitboxSize = this.size * 2;
       offsetX = this.size * 3.8;
       offsetY = this.size * 4;
-    }
-    // Fish
+    } // Fish
     else if (this.level === 3) {
       offsetX = 0;
       offsetY = 0;
-    }
-    // Mouse
+    } // Mouse
     else if (this.level === 4) {
       offsetX = this.size * 8;
       offsetY = this.size * 3;
-    }
-    // Worm
+    } // Worm
     else if (this.level === 5) {
       offsetX = this.size * 7;
       offsetY = this.size * 7;
+    } // Dust
+    else if (this.level === 6) {
+      hitboxSize = this.size * 2;
+      offsetX = this.size * 4;
+      offsetY = this.size * 3;
+      //Coin
+    } else if (this.level === 7) {
+      hitboxSize = this.size * 2.3;
+      offsetX = this.size * 2.8;
+      offsetY = this.size * 3;
     }
-
     this.hitbox = new Hitbox(
       this.x - hitboxSize / 2 + offsetX,
       this.y - hitboxSize / 2 + offsetY,
@@ -568,6 +654,12 @@ class Food {
         break;
       case 5:
         this.drawWorm();
+        break;
+      case 6:
+        this.drawDust();
+        break;
+      case 7:
+        this.drawCoin();
         break;
     }
 
@@ -660,6 +752,31 @@ class Food {
     line(120, 268, 148, 285); //Streifen
     line(115, 282, 138, 315); //Streifen
   }
+  drawDust() {
+    scale(0.6);
+    angleMode(DEGREES);
+    fill(200);
+    noStroke();
+    quad(146, 180, 130, 120, 230, 143, 188, 170);
+    quad(150, 80, 228, 102, 230, 143, 110, 130);
+
+    stroke(0);
+    strokeWeight(3);
+    arc(180, 90, 60, 60, 195, 20, OPEN);
+    arc(220, 120, 50, 50, 210, 60, OPEN);
+    arc(215, 160, 50, 50, -50, 170, OPEN);
+    arc(165, 160, 55, 55, 5, 145, OPEN);
+    arc(145, 110, 60, 60, 160, 285, OPEN);
+    arc(125, 150, 65, 65, 55, 300, OPEN);
+  }
+
+  drawCoin() {
+    scale(0.75);
+    fill(255, 199, 56);
+    ellipse(100, 100, 100); //Aussen
+    fill(255, 245, 20);
+    ellipse(100, 100, 80); //Innen
+  }
 
   move() {
     this.x += 2;
@@ -713,6 +830,17 @@ class Enemy {
       hitboxWidth = this.size * 1.5;
       offsetY = -this.size / 1.6;
       offsetX = this.size;
+      //Dog
+    } else if (this.level === 6) {
+      hitboxHeight = this.size * 1.5;
+      hitboxWidth = this.size * 2;
+      offsetY = -this.size / 3;
+      offsetX = this.size * 2;
+    } else if (this.level === 7) {
+      hitboxHeight = this.size;
+      hitboxWidth = this.size;
+      offsetY = -this.size / 3;
+      offsetX = this.size * 2;
     }
 
     this.hitbox = new Hitbox(
@@ -742,6 +870,12 @@ class Enemy {
         break;
       case 5:
         this.drawWindow();
+        break;
+      case 6:
+        this.drawDog();
+        break;
+      case 7:
+        this.drawClaw();
         break;
     }
 
@@ -852,6 +986,65 @@ class Enemy {
     strokeWeight(12);
     line(135, 39, 135, 302); //Kreuz
     line(39, 180, 232, 180); //Kreuz
+  }
+
+  drawDog() {
+    translate(0, -200);
+    noStroke();
+    fill(255);
+    triangle(280, 160, 295, 140, 300, 160); //ZAHN
+    triangle(300, 165, 315, 145, 315, 165); //ZAHN
+    triangle(282, 117, 297, 137, 302, 117); //ZAHN
+    triangle(302, 115, 315, 135, 312, 115); //ZAHN
+
+    fill(104, 60, 49);
+    rect(100, 150, 130, 60, 40, 0, 0, 0); //Bauch
+    rect(100, 200, 23, 60, 5); //Bein
+    rect(210, 200, 20, 60, 5); //Bein
+    quad(200, 130, 305, 95, 320, 120, 210, 160); //Mund
+    quad(210, 130, 320, 160, 315, 180, 210, 170); //Mund
+    ellipse(308, 95, 15); //Nase
+    triangle(200, 170, 200, 100, 230, 130); //Ohr
+    triangle(220, 160, 220, 90, 250, 120); //Ohr
+
+    fill(255, 255, 5);
+    ellipse(250, 130, 10); //Auge
+    fill(0);
+    ellipse(250, 130, 5, 10); //Auge
+    strokeWeight(3);
+    stroke(0);
+    line(245, 120, 260, 122); //Auge
+
+    noFill();
+    strokeWeight(10);
+    line(380, 130, 500, 130); //Bell
+    line(380, 100, 480, 50); //Bell
+    line(380, 160, 480, 210); //Bell
+    stroke(104, 60, 49);
+    arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
+  }
+  drawClaw() {
+    translate(0, -250);
+    noFill();
+    strokeWeight(12);
+    stroke(0);
+    arc(200, 200, 140, 140, TWO_PI + 26, -QUARTER_PI); //Schwanz
+    fill(0);
+    noStroke();
+    ellipse(148, 210, 45); //Fudi
+    ellipse(200, 240, 35); //Kopf
+    quad(160, 210, 190, 250, 220, 270, 175, 270); //Vorderbeine
+    quad(130, 210, 170, 210, 180, 270, 155, 250); //Hinterbeine
+    ellipse(208, 247, 20); //Schnauze
+    ellipse(216, 248, 8); //Nase
+    triangle(180, 240, 202, 210, 200, 240); //Ohr
+    triangle(240, 250, 250, 245, 245, 255); //Kralle
+    triangle(240, 260, 255, 250, 245, 250); //Kralle
+    triangle(240, 260, 255, 255, 245, 252); //Kralle
+    fill(255);
+    ellipse(208, 240, 5); //Auge w
+    fill(0);
+    ellipse(209, 241, 3); //Auge s arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
 
   move() {
