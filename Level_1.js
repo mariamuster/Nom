@@ -7,8 +7,8 @@ let enemy;
 let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
-let hasWon = false; // New variable to track win state
-let debugMode = false;
+let hasWon = false; 
+let debugMode = true;
 
 let myFont;
 function preload() {
@@ -141,6 +141,10 @@ function drawLevel() {
     case 7:
       background(255, 152, 123);
       break;
+
+    case 8:
+      background(215, 255, 164);
+      break;
   }
 }
 
@@ -166,6 +170,9 @@ function getScoreColor() {
 
     case 7:
       return color(0, 181, 255);
+
+    case 8:
+      return color(255, 159, 221);
   }
 }
 
@@ -219,7 +226,7 @@ function mousePressed() {
     if (continueButton.intersects(new Hitbox(mouseX, mouseY, 1, 1))) {
       nextLevel = false;
       currentLevel++;
-      if (currentLevel > 7) {
+      if (currentLevel > 8) {
         currentLevel = 1;
       }
       initializeGame();
@@ -243,8 +250,8 @@ function checkNextLevel() {
   let playerArea = PI * sq(player.size / 2);
   let screenArea = width * height;
 
-  if (playerArea / screenArea > 0.7) {
-    if (currentLevel >= 7) {
+  if (playerArea / screenArea > 0.6) {
+    if (currentLevel >= 8) {
       hasWon = true; // Set win state if level is 4 or higher
     } else {
       nextLevel = true; // Proceed to next level
@@ -268,7 +275,7 @@ function checkCollision(object1, object2) {
 class Player {
   constructor(size, level) {
     this.x = width / 2;
-    this.y = height - height / 7;
+    this.y = height - height / 5;
     this.size = size;
     this.level = level;
     this.hitbox = new Hitbox(this.x, this.y, this.size, this.size);
@@ -291,7 +298,7 @@ class Player {
       case 3:
         // Seal
         hitboxWidth = this.size * 0.8;
-        hitboxHeight = this.size * 0.6;
+        hitboxHeight = this.size * 0.8;
         break;
       case 4:
         // Cat
@@ -300,19 +307,24 @@ class Player {
         break;
       case 5:
         // Bird
-        hitboxWidth = this.size * 4;
-        hitboxHeight = this.size * 10;
+        hitboxWidth = this.size;
+        hitboxHeight = this.size;
         break;
 
       case 6:
         // Hoover
-        hitboxWidth = this.size * 2;
-        hitboxHeight = this.size / 2;
+        hitboxWidth = this.size/1.5;
+      hitboxHeight = this.size / 1.4;
         break;
 
       case 7: // Sofa
         hitboxWidth = this.size * 3;
         hitboxHeight = this.size * 1.3;
+        break;
+
+      case 8: // WM
+        hitboxWidth = this.size;
+      hitboxHeight = this.size*1.4;
         break;
 
       default:
@@ -353,6 +365,9 @@ class Player {
         break;
       case 7:
         this.drawSofa();
+        break;
+      case 8:
+        this.drawWM();
         break;
     }
 
@@ -514,7 +529,7 @@ class Player {
     push();
     angleMode(RADIANS);
 
-    translate(-120, -120);
+    translate(-210, -55);
     stroke(100);
     strokeWeight(10);
     noFill();
@@ -559,6 +574,39 @@ class Player {
     rect(50, 115, 260, 20); //Unten
     rect(20, 60, 40, 85, 10); //ArmlehneL
     rect(300, 60, 40, 85, 10); //ArmlehneR
+  }
+
+  drawWM() {
+    scale(0.5)
+    translate(-200, -190)
+    fill(232, 231, 231);
+    rect(100, 50, 200, 273, 7); //Körper
+    rect(245, 285, 40, 30, 5); //Filter
+  
+    fill(179, 188, 187);
+    ellipse(203, 73, 20, 19); //DrehknopfA
+    ellipse(285, 65, 10, 9); //Knopf
+    rect(281, 74, 8, 10, 1); //Knopf
+    ellipse(200, 180, 182, 180); //Trommel1
+  
+    fill(130, 137, 137);
+    rect(265, 323, 25, 12, 0, 0, 2, 2); //Fuss
+    rect(110, 323, 25, 12, 0, 0, 2, 2); //Fuss
+    ellipse(203, 73, 15, 14); //DrehknopfI
+  
+    fill(136, 172, 145);
+    rect(230, 60, 42, 25); //Anzeige
+  
+    line(100, 90, 300, 90); //OberteilQ
+    line(175, 50, 175, 90); //OberteilH
+    line(120, 70, 160, 70); //Fach
+  
+    fill(44, 71, 215);
+    ellipse(200, 180, 140, 135); //Trommel2
+    ellipse(200, 180, 120, 115); //Tromme3
+  
+    fill(0);
+    ellipse(285, 65, 6, 5); //Knopf
   }
 
   move() {
@@ -625,6 +673,11 @@ class Food {
       hitboxSize = this.size * 2.3;
       offsetX = this.size * 2.8;
       offsetY = this.size * 3;
+          // Sock
+    } else if (this.level === 8) {
+      hitboxSize = this.size;
+      offsetX = this.size*3.5 ;
+      offsetY = this.size*5;
     }
     this.hitbox = new Hitbox(
       this.x - hitboxSize / 2 + offsetX,
@@ -660,6 +713,9 @@ class Food {
         break;
       case 7:
         this.drawCoin();
+        break;
+      case 8:
+        this.drawSock();
         break;
     }
 
@@ -778,6 +834,26 @@ class Food {
     ellipse(100, 100, 80); //Innen
   }
 
+  drawSock() {
+    scale(0.5)
+    noStroke();
+  fill(255);
+  ellipse(100, 300, 50); //Spitze
+  fill(255, 0, 0);
+  ellipse(180, 240, 50); //Ferse
+  quad(165, 220, 200, 255, 120, 315, 85, 280); //Fuss
+  rect(160, 110, 45, 130); //Knöchel
+  stroke(255);
+  strokeWeight(3);
+  noFill();
+  arc(205, 248, 50, 50, PI - QUARTER_PI, PI + HALF_PI); //Ferse
+  strokeWeight(3);
+  line(160, 130, 205, 130); //Streifen
+  line(160, 140, 205, 140); //Streifen
+  line(160, 150, 205, 150); //Streifen
+  }
+
+
   move() {
     this.x += 2;
     this.updateHitbox();
@@ -836,12 +912,19 @@ class Enemy {
       hitboxWidth = this.size * 2;
       offsetY = -this.size / 3;
       offsetX = this.size * 2;
+      //Claw
     } else if (this.level === 7) {
       hitboxHeight = this.size;
       hitboxWidth = this.size;
       offsetY = -this.size / 3;
       offsetX = this.size * 2;
-    }
+       //Brick
+    } else if (this.level === 8) {
+      hitboxHeight = this.size/1.6;
+      hitboxWidth = this.size;
+      offsetY = -this.size+150;
+      offsetX = this.size/1.6;
+    } 
 
     this.hitbox = new Hitbox(
       this.x - hitboxWidth / 2 + offsetX,
@@ -877,6 +960,9 @@ class Enemy {
       case 7:
         this.drawClaw();
         break;
+      case 8:
+          this.drawBrick();
+          break;
     }
 
     pop();
@@ -1047,9 +1133,56 @@ class Enemy {
     ellipse(209, 241, 3); //Auge s arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
 
+  drawBrick() {
+    noStroke();
+  fill(187, 75, 47);
+  rect(20, 20, 105, 60);//Background
+
+  fill(135, 74, 57);
+  rect(25, 25, 5);//.__.
+  rect(25, 70, 5);//.__.
+  rect(25, 52, 5, 15);//.__.
+  rect(25, 33, 5, 15);//.__.
+
+  rect(35, 25, 5, 15);//___
+  rect(35, 42.5, 5, 15);//___
+  rect(35, 60, 5, 15);//___
+
+  rect(45, 25, 5);//.__.
+  rect(45, 70, 5);//.__.
+  rect(45, 52, 5, 15);//.__.
+  rect(45, 33, 5, 15);//.__.
+
+  rect(55, 42, 35, 15);//l__l
+
+  rect(95, 25, 5);//.__.
+  rect(95, 70, 5);//.__.
+  rect(95, 52, 5, 15);//.__.
+  rect(95, 33, 5, 15);//.__.
+
+  rect(105, 25, 5, 15);//___
+  rect(105, 42.5, 5, 15);//___
+  rect(105, 60, 5, 15);//___
+
+  rect(115, 25, 5);//.__.
+  rect(115, 70, 5);//.__.
+  rect(115, 52, 5, 15);//.__.
+  rect(115, 33, 5, 15);//.__.
+
+  rect(55, 25, 5, 15);//_ o
+  rect(65, 25, 5, 15);//_ o
+  rect(75, 25, 5, 15);//_ o
+  rect(85, 25, 5, 15);//_ o
+
+  rect(55, 60, 5, 15);//_ u
+  rect(65, 60, 5, 15);//_ u
+  rect(75, 60, 5, 15);//_ u
+  rect(85, 60, 5, 15);//_ u
+  }
+
   move() {
     this.x += 7;
-    this.hitbox.x += 7;
+    //this.hitbox.x += 7;
     this.updateHitbox();
   }
 
