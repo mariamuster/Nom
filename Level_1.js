@@ -212,7 +212,7 @@ function checkEnemySpawn() {
     let spawnScore;
     switch (currentLevel) {
       case 1:
-        spawnScore = 4;
+        spawnScore = 15;
         break;
       case 2:
         spawnScore = 8;
@@ -221,19 +221,19 @@ function checkEnemySpawn() {
         spawnScore = 10;
         break;
       case 4:
-        spawnScore = 8;
+        spawnScore = 28;
         break;
       case 5:
-        spawnScore = 6;
+        spawnScore = 13;
         break;
       case 6:
-        spawnScore = 5;
+        spawnScore = 18;
         break;
       case 7:
         spawnScore = 4;
         break;
       case 8:
-        spawnScore = 3;
+        spawnScore = 14;
         break;
       default:
         spawnScore = 15;
@@ -611,6 +611,8 @@ class Player {
     scale(0.5)
     translate(-200, -190)
     fill(232, 231, 231);
+    strokeWeight(1.5)
+    stroke(0)
     rect(100, 50, 200, 273, 7); //Körper
     rect(245, 285, 40, 30, 5); //Filter
   
@@ -859,6 +861,8 @@ class Food {
 
   drawCoin() {
     scale(0.75);
+    strokeWeight(1.5)
+    stroke(0)
     fill(255, 199, 56);
     ellipse(100, 100, 100); //Aussen
     fill(255, 245, 20);
@@ -1052,6 +1056,8 @@ class Enemy {
   drawLion() {
     translate(this.x, -300);
     fill(104, 60, 17);
+    strokeWeight(1.5)
+    stroke(0)
     triangle(215, 155, 185, 155, 200, 100);
     triangle(185, 155, 155, 175, 140, 110);
     triangle(210, 155, 240, 175, 240, 110);
@@ -1216,30 +1222,36 @@ class Enemy {
     let height;
     switch (currentLevel) {
       case 1:
-        speed = 2;
-        height = 200;
+        speed = 5;
+        height = 150;
         break;
       case 2:
-        speed = 3;
-        height = 400;
+        speed = 10;
+        height = 500;
         break;
       case 3:
-        speed = 4;
+        speed = 6;
+        height = 500;
         break;
       case 4:
         speed = 5;
+        height = 250;
         break;
       case 5:
-        speed = 6;
+        speed = 12;
+        height = 300;
         break;
       case 6:
         speed = 7;
+        height =200;
         break;
       case 7:
         speed = 8;
+        height = 500;
         break;
       case 8:
-        speed = 9;
+        speed = 15;
+        height = 200;
         break;
       default:
         speed = 2;
