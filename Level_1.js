@@ -208,11 +208,42 @@ function showNextLevelScreen() {
 
 //wann Enemy
 function checkEnemySpawn() {
-  if (score >= 15 && !enemyActive) {
-    enemyActive = true;
-    enemy.x = -200;
+  
+    let spawnScore;
+    switch (currentLevel) {
+      case 1:
+        spawnScore = 4;
+        break;
+      case 2:
+        spawnScore = 8;
+        break;
+      case 3:
+        spawnScore = 10;
+        break;
+      case 4:
+        spawnScore = 8;
+        break;
+      case 5:
+        spawnScore = 6;
+        break;
+      case 6:
+        spawnScore = 5;
+        break;
+      case 7:
+        spawnScore = 4;
+        break;
+      case 8:
+        spawnScore = 3;
+        break;
+      default:
+        spawnScore = 15;
+    }
+  
+    if (score >= spawnScore && !enemyActive) {
+      enemyActive = true;
+      enemy.x = -200;
+    }
   }
-}
 
 function mousePressed() {
   if (gameOver) {
@@ -1181,8 +1212,41 @@ class Enemy {
   }
 
   move() {
-    this.x += 7;
-    //this.hitbox.x += 7;
+    let speed;
+    let height;
+    switch (currentLevel) {
+      case 1:
+        speed = 2;
+        height = 200;
+        break;
+      case 2:
+        speed = 3;
+        height = 400;
+        break;
+      case 3:
+        speed = 4;
+        break;
+      case 4:
+        speed = 5;
+        break;
+      case 5:
+        speed = 6;
+        break;
+      case 6:
+        speed = 7;
+        break;
+      case 7:
+        speed = 8;
+        break;
+      case 8:
+        speed = 9;
+        break;
+      default:
+        speed = 2;
+    }
+
+    this.x += speed;
+    this.y = height;
     this.updateHitbox();
   }
 
