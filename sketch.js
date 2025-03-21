@@ -52,50 +52,40 @@ uiLeft.addEventListener("mouseup", () => {
   player.movingLeft = false;});
 uiLeft.addEventListener("mouseleave", () => {
   player.movingLeft = false;});
-
   uiRight.addEventListener("mouseup", () => {
-    player.movingRight = false;
-  });
+    player.movingRight = false;});
   uiRight.addEventListener("mouseleave", () => {
-    player.movingRight = false;
-  });
+    player.movingRight = false;});
   
   uiUp.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    player.movingUp = true;
-  });
+    player.movingUp = true;});
   uiUp.addEventListener("touchend", () => {
-    player.moveUp = false;
-  });
+    player.moveUp = false;});
   
   uiDown.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    player.moveDown = true;
-  });
+    player.moveDown = true;});
   uiDown.addEventListener("touchend", () => {
-    player.moveDown = false;
-  });
+    player.moveDown = false; });
   
   uiLeft.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    player.moveLeft = true;
-  });
+    player.moveLeft = true; });
   uiLeft.addEventListener("touchend", () => {
-    player.moveLeft = false;
-  });
+    player.moveLeft = false;});
   
+  uiRight.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player.moveRight = true; });
+  uiRight.addEventListener("touchend", () => {
+    player.moveRight = false; });
+
   uiTrigger.addEventListener("click", () => {
     ui.classList.toggle("active");
   });
   
-  uiRight.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    player.moveRight = true;
-  });
-  uiRight.addEventListener("touchend", () => {
-    player.moveRight = false;
-  });
-
+ 
 function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
