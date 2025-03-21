@@ -45,8 +45,8 @@ canvas {
 }
 
 #touch-ui {
-  bottom: 10px;
-  right: 10px;
+  bottom: 20px;
+  right: 30px;
   border-radius: 6px;
   padding: 10px;
 
