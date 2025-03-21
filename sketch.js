@@ -32,81 +32,47 @@ let uiDown = document.getElementById("touch-ui-down");
 let uiLeft = document.getElementById("touch-ui-left");
 let uiRight = document.getElementById("touch-ui-right");
 
-uiUp.addEventListener("mousedown", () => {
-  player.movingUp = true;
-});
-uiUp.addEventListener("mouseup", () => {
-  player.movingUp = false;
-});
-uiUp.addEventListener("mouseleave", () => {
-  player.movingUp = false;
-});
+;function addEventListeners(element, direction) {
+  // Touch events
+  element.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player[`moving${direction}`] = true;
+  }, {passive: false});
 
-uiDown.addEventListener("mousedown", () => {
-  player.movingDown = true;
-});
-uiDown.addEventListener("mouseup", () => {
-  player.movingDown = false;
-});
-uiDown.addEventListener("mouseleave", () => {
-  player.movingDown = false;
-});
+  element.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    player[`moving${direction}`] = false;
+  }, {passive: false});
 
-uiLeft.addEventListener("mousedown", () => {
-  player.movingLeft = true;
-});
-uiLeft.addEventListener("mouseup", () => {
-  player.movingLeft = false;
-});
-uiLeft.addEventListener("mouseleave", () => {
-  player.movingLeft = false;
-});
+  element.addEventListener("touchcancel", (e) => {
+    e.preventDefault();
+    player[`moving${direction}`] = false;
+  }, {passive: false});
 
-uiRight.addEventListener("mousedown", () => {
-  player.movingRight = true;
-});
-uiRight.addEventListener("mouseup", () => {
-  player.movingRight = false;
-});
-uiRight.addEventListener("mouseleave", () => {
-  player.movingRight = false;
-});
+  // Mouse events
+  element.addEventListener("mousedown", () => {
+    player[`moving${direction}`] = true;
+  });
 
-uiUp.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  player.movingUp = true;
-});
-uiUp.addEventListener("touchend", () => {
-  player.moveUp = false;
-});
+  element.addEventListener("mouseup", () => {
+    player[`moving${direction}`] = false;
+  });
 
-uiDown.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  player.moveDown = true;
-});
-uiDown.addEventListener("touchend", () => {
-  player.moveDown = false;
-});
+  element.addEventListener("mouseleave", () => {
+    player[`moving${direction}`] = false;
+  });
+}
 
-uiLeft.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  player.moveLeft = true;
-});
-uiLeft.addEventListener("touchend", () => {
-  player.moveLeft = false;
-});
+addEventListeners(uiUp, "Up");
+addEventListeners(uiDown, "Down");
+addEventListeners(uiLeft, "Left");
+addEventListeners(uiRight, "Right");
 
-uiRight.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  player.moveRight = true;
-});
-uiRight.addEventListener("touchend", () => {
-  player.moveRight = false;
-});
-
-uiTrigger.addEventListener("click", () => {
+uiTrigger.addEventListener("click", (e) => {
   ui.classList.toggle("active");
 });
+
+
 
 function preload() {
   myFont = loadFont("assets/LomoWall.otf");
