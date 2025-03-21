@@ -96,7 +96,7 @@ function preload() {
   brickSound = loadSound("sound/Meteor.mp3", () =>
     console.log("meteor.wav loaded")
   );
-  fruitSound = loadSound("sound/fruit.mp3", () =>
+  fruitSound = loadSound("sound/Fruit.mp3", () =>
     console.log("fruit.wav loaded")
   );
   lionSound = loadSound("sound/Lion.mp3", () => console.log("lion.wav loaded"));
