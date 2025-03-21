@@ -112,12 +112,8 @@ function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
   leafSound = loadSound("sound/Leaf.mp3", () => console.log("leaf.wav loaded"));
-  brickSound = loadSound("sound/Meteor.mp3", () =>
-    console.log("meteor.wav loaded")
-  );
-  fruitSound = loadSound("sound/Fruit.mp3", () =>
-    console.log("Fruit.wav loaded")
-  );
+  brickSound = loadSound("sound/Meteor.mp3", () => console.log("meteor.wav loaded"));
+  fruitSound = loadSound("sound/Fruit.mp3", () => console.log("Fruit.wav loaded"));
   lionSound = loadSound("sound/Lion.mp3", () => console.log("lion.wav loaded"));
 }
 
