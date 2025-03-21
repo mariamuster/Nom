@@ -14,9 +14,21 @@ let myFont;
 let myFont2;
 
 let leafSound;
-let brickSound;
+let meteorSound;
 let fruitSound;
 let lionSound;
+let fishSound;
+let orcaSound;
+let mouseSound;
+let carSound;
+let wormSound;
+let windowSound;
+let dustSound;
+let dogSound;
+let coinSound;
+let catSound;
+let sockSound;
+let brickSound;
 
 let gameState = "START";
 let playerName = "";
@@ -69,10 +81,23 @@ uiTrigger.addEventListener("click", () => {
 function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
-  leafSound = loadSound("sound/Leaf.mp3", () => console.log("leaf.wav loaded"));
-  brickSound = loadSound("sound/Meteor.mp3", () => console.log("meteor.wav loaded"));
-  fruitSound = loadSound("sound/Fruit.mp3", () => console.log("Fruit.wav loaded"));
-  lionSound = loadSound("sound/Lion.mp3", () => console.log("lion.wav loaded"));
+  leafSound = loadSound("sound/1Leaf.mp3", () => console.log("leaf.wav loaded"));
+  meteorSound = loadSound("sound/1Meteor.mp3", () => console.log("meteor.wav loaded"));
+  fruitSound = loadSound("sound/2Fruit.mp3", () => console.log("Fruit.wav loaded"));
+  lionSound = loadSound("sound/2Lion.mp3", () => console.log("lion.wav loaded"));
+  fishSound = loadSound("sound/3Fish.mp3", () => console.log("fish.wav loaded"));
+  orcaSound = loadSound("sound/3Orca.mp3", () => console.log("orca.wav loaded"));
+  mouseSound = loadSound("sound/4Mouse.mp3", () => console.log("mouse.wav loaded"));
+  carSound = loadSound("sound/4Car.mp3", () => console.log("car.wav loaded"));
+  wormSound = loadSound("sound/5Worm.mp3", () => console.log("worm.wav loaded"));
+  windowSound = loadSound("sound/5Window.mp3", () => console.log("window.wav loaded"));
+  dustSound = loadSound("sound/6Dust.mp3", () => console.log("dust.wav loaded"));
+  dogSound = loadSound("sound/6Dog.mp3", () => console.log("dog.wav loaded"));
+  coinSound = loadSound("sound/7Coin.mp3", () => console.log("coin.wav loaded"));
+  clawSound = loadSound("sound/7Claw.mp3", () => console.log("claw.wav loaded"));
+  sockSound = loadSound("sound/8Sock.mp3", () => console.log("sock.wav loaded"));
+  brickSound = loadSound("sound/8Brick.mp3", () => console.log("brick.wav loaded"));
+
 }
 
 function setup() {
@@ -190,6 +215,12 @@ function draw() {
             spawnFood();
             if (currentLevel === 1 && leafSound) leafSound.play();
             if (currentLevel === 2 && fruitSound) fruitSound.play();
+            if (currentLevel === 3 && fishSound) fishSound.play();
+            if (currentLevel === 4 && mouseSound) mouseSound.play();
+            if (currentLevel === 5 && wormSound) wormSound.play();
+            if (currentLevel === 6 && dustSound) dustSound.play();
+            if (currentLevel === 7 && coinSound) coinSound.play();
+            if (currentLevel === 8 && sockSound) sockSound.play();
             // Play sound when food is hit
             powerUp();
             checkEnemySpawn();
@@ -373,8 +404,14 @@ function checkEnemySpawn() {
   if (score >= 1 && !enemyActive) {
     enemyActive = true;
     enemy.x = -200;
-    if (currentLevel === 1 && brickSound) brickSound.play();
+    if (currentLevel === 1 && meteorSound) meteorSound.play();
     if (currentLevel === 2 && lionSound) lionSound.play();
+    if (currentLevel === 3 && orcaSound) orcaSound.play();
+    if (currentLevel === 4 && carSound) carSound.play();
+    if (currentLevel === 5 && windowSound) windowSound.play();
+    if (currentLevel === 6 && dogSound) dogSound.play();
+    if (currentLevel === 7 && clawSound) clawSound.play();
+    if (currentLevel === 8 && brickSound) brickSound.play();
   }
 }
 
