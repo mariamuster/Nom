@@ -32,35 +32,26 @@ let uiDown = document.getElementById("touch-ui-down");
 let uiLeft = document.getElementById("touch-ui-left");
 let uiRight = document.getElementById("touch-ui-right");
 
-;function addEventListeners(element, direction) {
-  // Touch events
-  element.addEventListener("touchstart", (e) => {
+function addEventListeners(element, direction) {
+  const startMove = (e) => {
     e.preventDefault();
     player[`moving${direction}`] = true;
-  }, {passive: false});
+  };
 
-  element.addEventListener("touchend", (e) => {
+  const stopMove = (e) => {
     e.preventDefault();
     player[`moving${direction}`] = false;
-  }, {passive: false});
+  };
 
-  element.addEventListener("touchcancel", (e) => {
-    e.preventDefault();
-    player[`moving${direction}`] = false;
-  }, {passive: false});
+  // Touch events
+  element.addEventListener("touchstart", startMove, { passive: false });
+  element.addEventListener("touchend", stopMove, { passive: false });
+  element.addEventListener("touchcancel", stopMove, { passive: false });
 
   // Mouse events
-  element.addEventListener("mousedown", () => {
-    player[`moving${direction}`] = true;
-  });
-
-  element.addEventListener("mouseup", () => {
-    player[`moving${direction}`] = false;
-  });
-
-  element.addEventListener("mouseleave", () => {
-    player[`moving${direction}`] = false;
-  });
+  element.addEventListener("mousedown", startMove);
+  element.addEventListener("mouseup", stopMove);
+  element.addEventListener("mouseleave", stopMove);
 }
 
 addEventListeners(uiUp, "Up");
@@ -68,9 +59,10 @@ addEventListeners(uiDown, "Down");
 addEventListeners(uiLeft, "Left");
 addEventListeners(uiRight, "Right");
 
-uiTrigger.addEventListener("click", (e) => {
+uiTrigger.addEventListener("click", () => {
   ui.classList.toggle("active");
 });
+
 
 
 
