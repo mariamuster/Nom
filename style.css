@@ -57,8 +57,8 @@ canvas {
 
 .touch-ui-button {
   cursor: pointer;
-  width: 100px;
-  height: 100px;
+  width: 600px;
+  height: 600px;
 
   border-radius: 50%;
   border: none;
