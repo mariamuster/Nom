@@ -7,17 +7,163 @@ let enemy;
 let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
-let hasWon = false; 
-let debugMode = false;
+let hasWon = false;
+let debugMode = true;
 
 let myFont;
+let myFont2;
+
+let leafSound;
+let brickSound;
+let fruitSound;
+let lionSound;
+
+let gameState = "START";
+let playerName = "";
+let highScores = [];
+let startButton;
+let nameInput;
+
+// html elements (ui)
+let uiTrigger = document.getElementById("touch-ui-trigger");
+let ui = document.getElementById("touch-ui");
+let uiUp = document.getElementById("touch-ui-up");
+let uiDown = document.getElementById("touch-ui-down");
+let uiLeft = document.getElementById("touch-ui-left");
+let uiRight = document.getElementById("touch-ui-right");
+
+uiUp.addEventListener("mousedown", () => {
+  player.movingUp = true;});
+uiUp.addEventListener("mouseup", () => {
+  player.movingUp = false;});
+uiUp.addEventListener("mouseleave", () => {
+  player.movingUp = false;});
+
+uiDown.addEventListener("mousedown", () => {
+  player.movingDown = true;});
+uiDown.addEventListener("mouseup", () => {
+  player.movingDown = false;});
+uiDown.addEventListener("mouseleave", () => {
+  player.movingDown = false;});
+
+uiLeft.addEventListener("mousedown", () => {
+  player.movingLeft = true;});
+uiLeft.addEventListener("mouseup", () => {
+  player.movingLeft = false;});
+uiLeft.addEventListener("mouseleave", () => {
+  player.movingLeft = false;});
+
+  uiRight.addEventListener("mouseup", () => {
+    player.movingRight = false;
+  });
+  uiRight.addEventListener("mouseleave", () => {
+    player.movingRight = false;
+  });
+  
+  uiUp.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player.movingUp = true;
+  });
+  uiUp.addEventListener("touchend", () => {
+    player.moveUp = false;
+  });
+  
+  uiDown.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player.moveDown = true;
+  });
+  uiDown.addEventListener("touchend", () => {
+    player.moveDown = false;
+  });
+  
+  uiLeft.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player.moveLeft = true;
+  });
+  uiLeft.addEventListener("touchend", () => {
+    player.moveLeft = false;
+  });
+  
+  uiTrigger.addEventListener("click", () => {
+    ui.classList.toggle("active");
+  });
+  
+  uiRight.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    player.moveRight = true;
+  });
+  uiRight.addEventListener("touchend", () => {
+    player.moveRight = false;
+  });
+
 function preload() {
-  myFont = loadFont("assets/LomoWallChartLTStd-50.otf");
+  myFont = loadFont("assets/LomoWall.otf");
+  myFont2 = loadFont("assets/Lomo2.otf");
+  leafSound = loadSound("sound/Leaf.mp3", () => console.log("leaf.wav loaded"));
+  brickSound = loadSound("sound/Meteor.mp3", () =>
+    console.log("meteor.wav loaded")
+  );
+  fruitSound = loadSound("sound/fruit.mp3", () =>
+    console.log("fruit.wav loaded")
+  );
+  lionSound = loadSound("sound/Lion.mp3", () => console.log("lion.wav loaded"));
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
+  initializeGame();
+
+  nameInput = createInput();
+  nameInput.id("name-input"); // Set the ID for CSS styling
+  nameInput.position(width / 2 - 103, height - 140);
+  nameInput.size(200);
+
+  // Add a CSS class for additional styling (optional, but good practice)
+  nameInput.class("name-input-style"); // Add this line to attach the class
+
+  startButton = createButton("Go");
+  startButton.position(width / 2 - 10, height / 2);
+  startButton.mousePressed(startGame);
+
+  // Initially show the input
+  nameInput.show();
+
+  startButton.hide(); // Hide start button initially
+}
+
+function startScreen() {
+  background(0, 255, 255);
+  textFont(myFont);
+  textAlign(CENTER, CENTER);
+  textSize(150);
+  fill(255, 255, 0);
+  text("Nom", width / 2, height / 2);
+
+  fill(0, 255, 0);
+  textFont(myFont);
+  fill(255);
+  textSize(30);
+  text("go!", width / 2, height / 2 + 300);
+
+  nameInput.show();
+  startButton.hide();
+
+  textFont(myFont2);
+  textSize(30);
+  fill(255);
+  text("NAME:", width / 2, height - 160);
+}
+
+function startGame() {
+  playerName = nameInput.value();
+  if (playerName.trim() === "") {
+    playerName = "Player";
+  }
+  gameState = "PLAY";
+  nameInput.hide();
+  startButton.hide();
+  uiTrigger.classList.add("active");
   initializeGame();
 }
 
@@ -32,7 +178,12 @@ function initializeGame() {
   for (let i = 1; i < numberOfFood; i++) {
     spawnFood();
   }
+
+  if (lionSound && lionSound.isPlaying()) {
+    lionSound.stop();
+  }
 }
+
 function drawHitboxes() {
   noFill();
   noStroke();
@@ -56,52 +207,62 @@ function drawHitboxes() {
 }
 
 function draw() {
-  if (!gameOver && !nextLevel && !hasWon) {
-    drawLevel();
+  switch (gameState) {
+    case "START":
+      startScreen();
+      break;
+    case "PLAY":
+      if (!gameOver && !nextLevel && !hasWon) {
+        drawLevel();
 
-    for (let i = food.length - 1; i >= 0; i--) {
-      food[i].show();
-      food[i].move();
-      if (food[i].checkCollision()) {
-        food.splice(i, 1);
-        score++;
-        spawnFood();
-        powerUp();
-        checkEnemySpawn();
-      }
-      if (food[i].x > width) {
-        food.splice(i, 1);
-        spawnFood();
-      }
-      if (enemyActive && food[i].enemyCollision()) {
-        food.splice(i, 1);
-      }
-    }
+        for (let i = food.length - 1; i >= 0; i--) {
+          food[i].show();
+          food[i].move();
+          if (food[i].checkCollision()) {
+            food.splice(i, 1);
+            score++;
+            spawnFood();
+            if (currentLevel === 1 && leafSound) leafSound.play();
+            if (currentLevel === 2 && fruitSound) fruitSound.play();
+            // Play sound when food is hit
+            powerUp();
+            checkEnemySpawn();
+          }
+          if (food[i].x > width) {
+            food.splice(i, 1);
+            spawnFood();
+          }
+          if (enemyActive && food[i].enemyCollision()) {
+            food.splice(i, 1);
+          }
+        }
 
-    player.show();
-    player.move();
+        player.show();
+        player.move();
+        player.update();
 
-    if (enemyActive) {
-      enemy.show();
-      enemy.move();
-      if (enemy.checkCollision()) {
-        gameOver = true;
+        if (enemyActive) {
+          enemy.show();
+          enemy.move();
+          if (enemy.checkCollision()) {
+            gameOver = true;
+          }
+        }
+
+        // Display score
+        fill(getScoreColor());
+        textSize(40);
+        textFont(myFont);
+        textAlign(LEFT, TOP);
+        text(`Score: ${score}`, 10, 10);
+      } else if (gameOver) {
+        showGameOverScreen();
+      } else if (nextLevel) {
+        showNextLevelScreen();
+      } else if (hasWon) {
+        showWinScreen();
       }
-    }
-
-    // Display score
-    fill(getScoreColor());
-    textSize(40);
-    textFont(myFont);
-    textAlign(LEFT, TOP);
-    text(`Score: ${score}`, 10, 10);
-  } else if (gameOver) {
-    showGameOverScreen();
-  } else if (nextLevel) {
-    showNextLevelScreen();
-  } else if (hasWon) {
-    // Check for win state
-    showWinScreen(); // Call win screen function
+      break;
   }
 
   if (debugMode) {
@@ -177,93 +338,134 @@ function getScoreColor() {
 }
 
 function showGameOverScreen() {
-  background(0, 0, 139);
+  background(0, 0, 255);
   fill(255, 0, 0);
   textSize(50);
   textFont(myFont);
   textAlign(CENTER, CENTER);
-  text("GAME OVER", width / 2, height / 2);
-  textSize(20);
-  text(`Final Score: ${score}`, width / 2, height / 2 + 60);
+  text("GAME‡OVER", width / 2, height / 2);
+  textFont(myFont2);
+  textSize(30);
+  text(`${playerName}: ${score}`, width / 2, height / 2 + 60);
 
-  fill(0, 255, 0);
+  // Make sure text is visible over the button
+  textFont(myFont);
+  fill(0, 255, 0); // Black text for better contrast
   textSize(30);
   text("RESTART", width / 2, height / 2 + 200);
 }
 
 function showNextLevelScreen() {
-  background(255, 255, 129);
+  background(255, 255, 0);
   fill(0, 0, 255);
   textSize(50);
   textFont(myFont);
   textAlign(CENTER, CENTER);
-  text("NEXT LEVEL", width / 2, height / 2);
-  textSize(20);
+  text("NEXT‡LEVEL", width / 2, height / 2);
+  textFont(myFont2);
+  textSize(30);
   text(`Score: ${score}`, width / 2, height / 2 + 60);
 
-  fill(0, 0, 255);
+  textFont(myFont);
+  fill(0, 255, 0);
   textSize(30);
   text("CONTINUE", width / 2, height / 2 + 200);
 }
 
+
 //wann Enemy
 function checkEnemySpawn() {
-  
-    let spawnScore;
-    switch (currentLevel) {
-      case 1:
-        spawnScore = 15;
-        break;
-      case 2:
-        spawnScore = 8;
-        break;
-      case 3:
-        spawnScore = 10;
-        break;
-      case 4:
-        spawnScore = 28;
-        break;
-      case 5:
-        spawnScore = 13;
-        break;
-      case 6:
-        spawnScore = 18;
-        break;
-      case 7:
-        spawnScore = 4;
-        break;
-      case 8:
-        spawnScore = 14;
-        break;
-      default:
-        spawnScore = 15;
-    }
-  
-    if (score >= spawnScore && !enemyActive) {
-      enemyActive = true;
-      enemy.x = -200;
-    }
+  let spawnScore;
+  switch (currentLevel) {
+    case 1:
+      spawnScore = 15;
+      break;
+    case 2:
+      spawnScore = 8;
+      break;
+    case 3:
+      spawnScore = 10;
+      break;
+    case 4:
+      spawnScore = 28;
+      break;
+    case 5:
+      spawnScore = 13;
+      break;
+    case 6:
+      spawnScore = 18;
+      break;
+    case 7:
+      spawnScore = 4;
+      break;
+    case 8:
+      spawnScore = 14;
+      break;
+    default:
+      spawnScore = 15;
   }
 
+  if (score >= 1 && !enemyActive) {
+    enemyActive = true;
+    enemy.x = -200;
+    if (currentLevel === 1 && brickSound) brickSound.play();
+    if (currentLevel === 2 && lionSound) lionSound.play();
+  }
+}
+
 function mousePressed() {
-  if (gameOver) {
-    let restartButton = new Hitbox(width / 2 - 50, height / 2 + 185, 100, 30);
-    if (restartButton.intersects(new Hitbox(mouseX, mouseY, 1, 1))) {
+  if (gameState === "START") {
+    if (
+      mouseX > width / 2 - 60 &&
+      mouseX < width / 2 + 60 &&
+      mouseY > height / 2 + 260 &&
+      mouseY < height / 2 + 300
+    ) {
+      uiTrigger.classList.add("active");
+      startGame();
+    }
+  } else if (gameOver) {
+    if (
+      mouseX > width / 2 - 60 &&
+      mouseX < width / 2 + 60 &&
+      mouseY > height / 2 + 180 &&
+      mouseY < height / 2 + 220
+    ) {
+      console.log("Restart clicked"); // Add debugging
       currentLevel = 1;
+      gameOver = false;
+      gameState = "PLAY";
       initializeGame();
     }
   } else if (nextLevel) {
-    let continueButton = new Hitbox(width / 2 - 50, height / 2 + 185, 100, 30);
-    if (continueButton.intersects(new Hitbox(mouseX, mouseY, 1, 1))) {
+    if ( mouseX > width / 2 - 60 &&
+      mouseX < width / 2 + 60 &&
+      mouseY > height / 2 + 180 &&
+      mouseY < height / 2 + 220 ) {
+      console.log("Continue clicked, current level:", currentLevel); // Add debugging
       nextLevel = false;
-      currentLevel++;
-      if (currentLevel > 8) {
-        currentLevel = 1;
+      currentLevel++; // ncrease the level
+      console.log("New level:", currentLevel); 
+      if (currentLevel > 2) {
+        hasWon = true;
+      } else {
+        initializeGame(); 
       }
+    }
+  } else if (hasWon) {
+    if (
+      mouseX > width / 2 - 60 &&
+      mouseX < width / 2 + 60 &&
+      mouseY > height / 2 + 180 &&
+      mouseY < height / 2 + 220
+    ) {
+      hasWon = false;
+      currentLevel = 1;
       initializeGame();
     }
   }
 }
+
 
 function spawnFood() {
   let x = random(-width, 0);
@@ -281,22 +483,34 @@ function checkNextLevel() {
   let playerArea = PI * sq(player.size / 2);
   let screenArea = width * height;
 
-  if (playerArea / screenArea > 0.6) {
-    if (currentLevel >= 8) {
-      hasWon = true; // Set win state if level is 4 or higher
+  if (playerArea / screenArea > 0.7) {
+    console.log(
+      "Player big enough for next level, current level:",
+      currentLevel
+    );
+    if (currentLevel >= 2) {
+      // Only win if already on level 2
+      hasWon = true;
     } else {
-      nextLevel = true; // Proceed to next level
+      nextLevel = true; // Otherwise show next level screen
     }
   }
 }
 
 function showWinScreen() {
-  background(255, 0, 255); // Set background color for win screen
-  fill(255, 255, 0); // Set text color to white
+  background(255, 0, 255); 
+  fill(255, 255, 0); 
   textSize(50);
   textFont(myFont);
   textAlign(CENTER, CENTER);
-  text("YOU WIN!", width / 2, height / 2); // Display win message
+  text("YOU‡WIN!", width / 2, height / 2);
+  fill(20, 0, 255); 
+  textSize(20);
+  textFont(myFont2);
+  text("©MARIA ZIMMERMANN 2025", width / 2, height - 140);
+  text("SOUND: MILO, ZILLA,", width / 2, height - 100);
+  text("CARLOTTA, LIV", width / 2, height - 80);
+  text("ZHdK CODING FOR THE ARTS", width / 2, height - 40);
 }
 
 function checkCollision(object1, object2) {
@@ -311,7 +525,13 @@ class Player {
     this.level = level;
     this.hitbox = new Hitbox(this.x, this.y, this.size, this.size);
     this.updateHitbox();
+    this.moveSpeed = 2;
+    this.movingUp = false;
+    this.movingDown = false;
+    this.movingLeft = false;
+    this.movingRight = false;
   }
+
 
   updateHitbox() {
     let hitboxWidth, hitboxHeight;
@@ -320,42 +540,34 @@ class Player {
       case 1: // Dino
         hitboxWidth = this.size;
         hitboxHeight = this.size;
-
         break;
       case 2: // Giraffe
         hitboxWidth = this.size * 1.5;
         hitboxHeight = this.size * 1.5;
         break;
-      case 3:
-        // Seal
+      case 3: // Seal
         hitboxWidth = this.size * 0.8;
         hitboxHeight = this.size * 0.8;
         break;
-      case 4:
-        // Cat
+      case 4: // Cat
         hitboxWidth = this.size * 1.5;
         hitboxHeight = this.size * 1.5;
         break;
-      case 5:
-        // Bird
+      case 5: // Bird
         hitboxWidth = this.size;
         hitboxHeight = this.size;
         break;
-
-      case 6:
-        // Hoover
-        hitboxWidth = this.size/1.5;
-      hitboxHeight = this.size / 1.4;
+      case 6:// Hoover
+        hitboxWidth = this.size / 1.5;
+        hitboxHeight = this.size / 1.4;
         break;
-
       case 7: // Sofa
         hitboxWidth = this.size * 3;
-        hitboxHeight = this.size * 1.3;
+        hitboxHeight = this.size * 1.1;
         break;
-
       case 8: // WM
         hitboxWidth = this.size;
-      hitboxHeight = this.size*1.4;
+        hitboxHeight = this.size * 1.4;
         break;
 
       default:
@@ -403,6 +615,74 @@ class Player {
     }
 
     pop();
+  }
+  drawDino() {
+    scale(0.5);
+    translate(-200, -200);//Krone
+    noStroke(0);
+    fill(0, 165, 45);
+    ellipse(100, 220, 100);
+    ellipse(90, 160, 100);
+    ellipse(110, 100, 100);
+    ellipse(200, 70, 120);
+    ellipse(300, 220, 100);
+    ellipse(310, 160, 100);
+    ellipse(290, 100, 100);
+    ellipse(200, 170, 250, 220);//Kopf
+    stroke(1);
+    fill(0, 124, 78);
+    ellipse(200, 200, 200, 180);//Schnauze
+    fill(0, 165, 45);
+    ellipse(200, 260, 100, 80);//Augen, Nase
+    fill(0);
+    ellipse(140, 210, 20);
+    ellipse(260, 210, 20);
+    ellipse(235, 250, 10);
+    ellipse(165, 250, 10); //Mund
+    noFill();
+    strokeWeight(2);
+    arc(200, 260, 80, 50, 0, PI); //Horn
+    fill(255);
+    noStroke();
+    triangle(170, 235, 200, 160, 230, 235);
+    triangle(120, 160, 110, 110, 160, 130);
+    triangle(280, 160, 290, 110, 240, 130);
+  }
+  drawGiraffe() {
+    translate(-200, -200);
+    noStroke();
+    fill(189, 108, 0); //Horn
+    ellipse(170, 90, 25);
+    ellipse(220, 90, 25);
+    rect(162, 90, 15, 50);
+    rect(212, 90, 15, 50);//Ohr
+    ellipse(280, 150, 80, 50);
+    ellipse(120, 150, 80, 50);
+    fill(255, 176, 49);//Kopf
+    ellipse(200, 200, 150, 100);
+    triangle(135, 220, 200, 300, 265, 220);
+    fill(224, 130, 6);
+    triangle(155, 150, 200, 290, 245, 150);
+    quad(130, 180, 168, 135, 270, 180, 232, 135);
+    ellipse(200, 150, 80, 50); //Nase
+    fill(189, 108, 0);
+    ellipse(200, 275, 70, 60); //Augen, Nase
+    fill(0);
+    ellipse(142, 195, 35);
+    ellipse(257, 195, 35);
+    ellipse(210, 265, 10, 15);
+    ellipse(190, 265, 10, 15);
+    fill(255);
+    ellipse(138, 185, 5);
+    ellipse(252, 185, 5); //Mund
+    stroke(0);
+    strokeWeight(2);
+    noFill(0);
+    arc(200, 285, 30, 20, 0, PI); //Wimpern
+    line(110, 190, 140, 180);
+    line(110, 195, 140, 180);
+    line(290, 190, 260, 180);
+    line(290, 195, 260, 180);
   }
 
   drawSeal() {
@@ -452,90 +732,6 @@ class Player {
     triangle(-50, 60, 5, 100, 60, 60);
   }
 
-  drawDino() {
-    scale(0.5);
-    translate(-200, -200);
-    //Krone
-    noStroke(0);
-    fill(0, 165, 45);
-    ellipse(100, 220, 100);
-    ellipse(90, 160, 100);
-    ellipse(110, 100, 100);
-    ellipse(200, 70, 120);
-    ellipse(300, 220, 100);
-    ellipse(310, 160, 100);
-    ellipse(290, 100, 100);
-    ellipse(200, 170, 250, 220);
-    //Kopf
-    stroke(1);
-    fill(0, 124, 78);
-    ellipse(200, 200, 200, 180);
-    //Schnauze
-    fill(0, 165, 45);
-    ellipse(200, 260, 100, 80);
-    //Augen, Nase
-    fill(0);
-    ellipse(140, 210, 20);
-    ellipse(260, 210, 20);
-    ellipse(235, 250, 10);
-    ellipse(165, 250, 10);
-
-    //Mund
-    noFill();
-    strokeWeight(2);
-    arc(200, 260, 80, 50, 0, PI);
-    //Horn
-    fill(255);
-    noStroke();
-    triangle(170, 235, 200, 160, 230, 235);
-    triangle(120, 160, 110, 110, 160, 130);
-    triangle(280, 160, 290, 110, 240, 130);
-  }
-
-  drawGiraffe() {
-    translate(-200, -200);
-    noStroke();
-    fill(189, 108, 0);
-    //Horn
-    ellipse(170, 90, 25);
-    ellipse(220, 90, 25);
-    rect(162, 90, 15, 50);
-    rect(212, 90, 15, 50);
-    //Ohr
-    ellipse(280, 150, 80, 50);
-    ellipse(120, 150, 80, 50);
-    fill(255, 176, 49);
-    //Kopf
-    ellipse(200, 200, 150, 100);
-    triangle(135, 220, 200, 300, 265, 220);
-    fill(224, 130, 6);
-    triangle(155, 150, 200, 290, 245, 150);
-    quad(130, 180, 168, 135, 270, 180, 232, 135);
-    ellipse(200, 150, 80, 50);
-    //Nase
-    fill(189, 108, 0);
-    ellipse(200, 275, 70, 60);
-    //Augen, Nase
-    fill(0);
-    ellipse(142, 195, 35);
-    ellipse(257, 195, 35);
-    ellipse(210, 265, 10, 15);
-    ellipse(190, 265, 10, 15);
-    fill(255);
-    ellipse(138, 185, 5);
-    ellipse(252, 185, 5);
-    //Mund
-    stroke(0);
-    strokeWeight(2);
-    noFill(0);
-    arc(200, 285, 30, 20, 0, PI);
-    //Wimpern
-    line(110, 190, 140, 180);
-    line(110, 195, 140, 180);
-    line(290, 190, 260, 180);
-    line(290, 195, 260, 180);
-  }
-
   drawBird() {
     translate(-120, -120);
     scale(0.6);
@@ -547,19 +743,17 @@ class Player {
     quad(105, 200, 140, 200, 220, 250, 185, 250); //Braue
     fill(255, 162, 1);
     quad(200, 220, 230, 250, 200, 270, 170, 250); //Schnabel
-
     fill(0);
     ellipse(140, 225, 40); //Auge s
     ellipse(270, 225, 40); //Auge s
     fill(255);
-
     ellipse(142, 223, 20); //Auge w
     ellipse(268, 223, 20); //Auge w
   }
+
   drawHoover() {
     push();
     angleMode(RADIANS);
-
     translate(-210, -55);
     stroke(100);
     strokeWeight(10);
@@ -570,18 +764,14 @@ class Player {
     arc(40, 80, 50, 50, HALF_PI, -TWO_PI - HALF_PI);
     line(42, 105, 173, 105);
     arc(175, 145, 80, 80, -TWO_PI - HALF_PI, HALF_PI);
-    line(175, 185, 145, 185);
-
-    //Kopf
+    line(175, 185, 145, 185); //Kopf
     stroke(0);
     strokeWeight(1);
     fill(100);
     rect(230, 20, 10, 70);
     fill(20);
     rect(220, 20, 10, 70, 20, 0, 0, 20);
-    rect(205, 30, 18, 50, 10, 0, 0, 10);
-
-    //Body
+    rect(205, 30, 18, 50, 10, 0, 0, 10);//Body
     fill(200, 200, 2);
     noStroke();
     rect(50, 150, 100, 70, 0, 50, 50, 0);
@@ -608,38 +798,38 @@ class Player {
   }
 
   drawWM() {
-    scale(0.5)
-    translate(-200, -190)
+    scale(0.5);
+    translate(-200, -190);
     fill(232, 231, 231);
-    strokeWeight(1.5)
-    stroke(0)
+    strokeWeight(1.5);
+    stroke(0);
     rect(100, 50, 200, 273, 7); //Körper
     rect(245, 285, 40, 30, 5); //Filter
-  
     fill(179, 188, 187);
     ellipse(203, 73, 20, 19); //DrehknopfA
     ellipse(285, 65, 10, 9); //Knopf
     rect(281, 74, 8, 10, 1); //Knopf
     ellipse(200, 180, 182, 180); //Trommel1
-  
     fill(130, 137, 137);
     rect(265, 323, 25, 12, 0, 0, 2, 2); //Fuss
     rect(110, 323, 25, 12, 0, 0, 2, 2); //Fuss
     ellipse(203, 73, 15, 14); //DrehknopfI
-  
     fill(136, 172, 145);
     rect(230, 60, 42, 25); //Anzeige
-  
     line(100, 90, 300, 90); //OberteilQ
     line(175, 50, 175, 90); //OberteilH
     line(120, 70, 160, 70); //Fach
-  
     fill(44, 71, 215);
     ellipse(200, 180, 140, 135); //Trommel2
     ellipse(200, 180, 120, 115); //Tromme3
-  
     fill(0);
     ellipse(285, 65, 6, 5); //Knopf
+  }
+  update() {
+    if (this.movingUp) this.y -= this.moveSpeed;
+    if (this.movingDown) this.y += this.moveSpeed;
+    if (this.movingLeft) this.x -= this.moveSpeed;
+    if (this.movingRight) this.x += this.moveSpeed;
   }
 
   move() {
@@ -677,9 +867,9 @@ class Food {
 
     // Leaf
     if (this.level === 1) {
-      offsetX = this.size * 7.8;
-      offsetY = this.size * 8;
-      // Friut
+      offsetX = this.size * 9.1;
+      offsetY = this.size * 9.5;
+     // Friut
     } else if (this.level === 2) {
       hitboxSize = this.size * 2;
       offsetX = this.size * 3.8;
@@ -693,7 +883,7 @@ class Food {
       offsetX = this.size * 8;
       offsetY = this.size * 3;
     } // Worm
-    else if (this.level === 5) {
+ else if (this.level === 5) {
       offsetX = this.size * 7;
       offsetY = this.size * 7;
     } // Dust
@@ -706,11 +896,11 @@ class Food {
       hitboxSize = this.size * 2.3;
       offsetX = this.size * 2.8;
       offsetY = this.size * 3;
-          // Sock
+      // Sock
     } else if (this.level === 8) {
       hitboxSize = this.size;
-      offsetX = this.size*3.5 ;
-      offsetY = this.size*5;
+      offsetX = this.size * 3.5;
+      offsetY = this.size * 5;
     }
     this.hitbox = new Hitbox(
       this.x - hitboxSize / 2 + offsetX,
@@ -755,7 +945,37 @@ class Food {
     pop();
   }
 
+  drawLeaf() {
+    scale(1.2);
+    noStroke();
+    fill(177, 127, 74);
+    ellipse(200, 200, 30, 50);
+    stroke(0);
+    line(200, 150, 200, 225);
+    line(200, 200, 190, 215);
+    line(200, 190, 187, 206);
+    line(200, 180, 186, 198);
+    line(200, 200, 210, 215);
+    line(200, 190, 214, 206);
+    line(200, 180, 214, 198);
+  }
+
+  drawFruit() {
+    scale(1.1);
+    fill(255, 100, 255);
+    noStroke();
+    ellipse(100, 100, 40, 50);
+    fill(202, 158, 103);
+    ellipse(90, 90, 7);
+    ellipse(97, 100, 7);
+    ellipse(107, 87, 7);
+    ellipse(103, 115, 7);
+    ellipse(109, 103, 7);
+    ellipse(94, 112, 7);
+  }
+
   drawFish() {
+    scale(0.8);
     fill(255, 165, 0);
     ellipse(0, 0, 130, 80);
     quad(-50, -55, 30, -45, 30, -30, -40, -30);
@@ -778,33 +998,6 @@ class Food {
     ellipse(220, 90, 10);
     stroke(0);
     line(100, 90, 160, 99);
-  }
-
-  drawLeaf() {
-    noStroke();
-    fill(177, 127, 74);
-    ellipse(200, 200, 30, 50);
-    stroke(0);
-    line(200, 150, 200, 225);
-    line(200, 200, 190, 215);
-    line(200, 190, 187, 206);
-    line(200, 180, 186, 198);
-    line(200, 200, 210, 215);
-    line(200, 190, 214, 206);
-    line(200, 180, 214, 198);
-  }
-
-  drawFruit() {
-    fill(255, 100, 255);
-    noStroke();
-    ellipse(100, 100, 40, 50);
-    fill(202, 158, 103);
-    ellipse(90, 90, 7);
-    ellipse(97, 100, 7);
-    ellipse(107, 87, 7);
-    ellipse(103, 115, 7);
-    ellipse(109, 103, 7);
-    ellipse(94, 112, 7);
   }
 
   drawWorm() {
@@ -848,7 +1041,6 @@ class Food {
     noStroke();
     quad(146, 180, 130, 120, 230, 143, 188, 170);
     quad(150, 80, 228, 102, 230, 143, 110, 130);
-
     stroke(0);
     strokeWeight(3);
     arc(180, 90, 60, 60, 195, 20, OPEN);
@@ -861,8 +1053,8 @@ class Food {
 
   drawCoin() {
     scale(0.75);
-    strokeWeight(1.5)
-    stroke(0)
+    strokeWeight(1.5);
+    stroke(0);
     fill(255, 199, 56);
     ellipse(100, 100, 100); //Aussen
     fill(255, 245, 20);
@@ -870,24 +1062,23 @@ class Food {
   }
 
   drawSock() {
-    scale(0.5)
+    scale(0.5);
     noStroke();
-  fill(255);
-  ellipse(100, 300, 50); //Spitze
-  fill(255, 0, 0);
-  ellipse(180, 240, 50); //Ferse
-  quad(165, 220, 200, 255, 120, 315, 85, 280); //Fuss
-  rect(160, 110, 45, 130); //Knöchel
-  stroke(255);
-  strokeWeight(3);
-  noFill();
-  arc(205, 248, 50, 50, PI - QUARTER_PI, PI + HALF_PI); //Ferse
-  strokeWeight(3);
-  line(160, 130, 205, 130); //Streifen
-  line(160, 140, 205, 140); //Streifen
-  line(160, 150, 205, 150); //Streifen
+    fill(255);
+    ellipse(100, 300, 50); //Spitze
+    fill(255, 0, 0);
+    ellipse(180, 240, 50); //Ferse
+    quad(165, 220, 200, 255, 120, 315, 85, 280); //Fuss
+    rect(160, 110, 45, 130); //Knöchel
+    stroke(255);
+    strokeWeight(3);
+    noFill();
+    arc(205, 248, 50, 50, PI - QUARTER_PI, PI + HALF_PI); //Ferse
+    strokeWeight(3);
+    line(160, 130, 205, 130); //Streifen
+    line(160, 140, 205, 140); //Streifen
+    line(160, 150, 205, 150); //Streifen
   }
-
 
   move() {
     this.x += 2;
@@ -908,6 +1099,45 @@ class Enemy {
     this.y = y;
     this.size = size;
     this.level = level;
+    this.soundPlayed = false;
+    this.speed = 0; // Initialize speed here
+
+    switch (currentLevel) {
+      // Set different enemy speeds for each Level
+      case 1:
+        this.speed = 5;
+        this.baseY = 150; 
+        break;
+      case 2:
+        this.speed = 8;
+        this.baseY = 500; 
+        break;
+        case 3:
+        this.speed = 6;
+        this.baseY = 500; 
+        break;
+        case 4:
+        this.speed = 5;
+        this.baseY = 250; 
+        break;
+        case 5:
+          this.speed = 12;
+          this.baseY = 300; 
+          break;
+          case 6:
+          this.speed = 7;
+          this.baseY =200; 
+          break;
+          case 7:
+            this.speed = 8;
+            this.baseY =500; 
+            break;
+            case 8:
+              this.speed = 15;
+              this.baseY =200; 
+              break;
+    }
+    this.y = this.baseY; //Set the Y here
     this.updateHitbox();
   }
 
@@ -919,22 +1149,28 @@ class Enemy {
 
     // METEOR
     if (this.level === 1) {
-      offsetY = -this.size * 0.8;
-      offsetX = this.size * 4;
+      hitboxHeight = this.size;
+      hitboxWidth = this.size * 2;
+      offsetY = -this.size + 100;
+      offsetX = this.size * 3.5;
       //LION
     } else if (this.level === 2) {
-      offsetY = -this.size;
-      offsetX = this.size * 4;
+      hitboxHeight = this.size;
+      hitboxWidth = this.size;
+      offsetY = -this.size + 15;
       //ORCA
     } else if (this.level === 3) {
       hitboxWidth *= 4;
       hitboxHeight *= 0.9;
+      offsetY = -this.size / 8;
+      drawing;
+      offsetX = this.size - 110;
       //CAR
     } else if (this.level === 4) {
-      hitboxWidth *= 2;
-      hitboxHeight *= 0.8;
-      offsetY = -this.size * 0.8;
-      offsetX = this.size * 4;
+      hitboxWidth *= 2.5;
+      hitboxHeight *= 1;
+      offsetY = -this.size * 1.1;
+      offsetX = this.size * 1.6;
       //WINDOW
     } else if (this.level === 5) {
       hitboxHeight = this.size * 2.3;
@@ -943,23 +1179,23 @@ class Enemy {
       offsetX = this.size;
       //Dog
     } else if (this.level === 6) {
-      hitboxHeight = this.size * 1.5;
-      hitboxWidth = this.size * 2;
-      offsetY = -this.size / 3;
+      hitboxHeight = this.size * 1.8;
+      hitboxWidth = this.size * 2.5;
+      offsetY = -this.size / 2.5;
       offsetX = this.size * 2;
       //Claw
     } else if (this.level === 7) {
-      hitboxHeight = this.size;
-      hitboxWidth = this.size;
-      offsetY = -this.size / 3;
-      offsetX = this.size * 2;
-       //Brick
+      hitboxHeight = this.size * 1.5;
+      hitboxWidth = this.size * 1.2;
+      offsetY = -this.size / 2;
+      offsetX = this.size * 1.8;
+      //Brick
     } else if (this.level === 8) {
-      hitboxHeight = this.size/1.6;
+      hitboxHeight = this.size / 1.6;
       hitboxWidth = this.size;
-      offsetY = -this.size+150;
-      offsetX = this.size/1.6;
-    } 
+      offsetY = -this.size + 150;
+      offsetX = this.size / 1.5;
+    }
 
     this.hitbox = new Hitbox(
       this.x - hitboxWidth / 2 + offsetX,
@@ -972,7 +1208,6 @@ class Enemy {
   show() {
     push();
     translate(this.x, this.y);
-
     switch (this.level) {
       case 1:
         this.drawMeteor();
@@ -996,11 +1231,62 @@ class Enemy {
         this.drawClaw();
         break;
       case 8:
-          this.drawBrick();
-          break;
+        this.drawBrick();
+        break;
     }
 
     pop();
+  }
+  drawMeteor() {
+    translate(0, -400);
+    scale(2);
+    noStroke();
+    fill(200, 0, 0);
+    triangle(30, 210, 170, 200, 196, 235);
+    triangle(10, 190, 170, 180, 170, 210);
+    triangle(50, 160, 200, 165, 170, 190);
+    ellipse(200, 200, 70);
+    fill(255, 158, 0);
+    ellipse(200, 200, 60);
+    triangle(30, 190, 175, 185, 175, 205);
+    triangle(50, 210, 175, 205, 196, 230);
+    triangle(70, 162, 200, 170, 180, 190);
+    fill(0);
+    ellipse(200, 200, 50);
+  }
+
+  drawLion() {
+    translate(0, -300);
+    fill(104, 60, 17);
+    strokeWeight(1.5);
+    stroke(0);
+    triangle(215, 155, 185, 155, 200, 100);
+    triangle(185, 155, 155, 175, 140, 110);
+    triangle(210, 155, 240, 175, 240, 110);
+    triangle(155, 175, 145, 210, 100, 160);
+    triangle(235, 165, 260, 210, 290, 160);
+    triangle(145, 200, 145, 230, 90, 210);
+    triangle(255, 200, 245, 240, 320, 210);
+    triangle(145, 230, 155, 250, 100, 270);
+    triangle(255, 230, 240, 250, 290, 270);
+    triangle(155, 250, 185, 260, 140, 310);
+    triangle(245, 250, 210, 260, 270, 310);
+    triangle(225, 250, 175, 260, 200, 330);
+    fill(249, 178, 51);
+    ellipse(140, 190, 40, 40);
+    ellipse(260, 190, 40, 40);
+    ellipse(200, 210, 120, 120);
+    fill(255);
+    ellipse(230, 210, 27);
+    ellipse(170, 210, 27);
+    ellipse(200, 250, 50, 40);
+    fill(0);
+    ellipse(230, 210, 20);
+    ellipse(170, 210, 20);
+    triangle(215, 230, 185, 230, 200, 240);
+    noFill();
+    arc(210, 245, 20, 20, 0, PI + QUARTER_PI);
+    arc(190, 245, 20, 20, -PI + QUARTER_PI * 3, HALF_PI + QUARTER_PI * 2);
   }
 
   drawOrca() {
@@ -1035,58 +1321,6 @@ class Enemy {
     quad(140, 130, 200, 130, 200, 195, 115, 195);
   }
 
-  drawMeteor() {
-    translate(this.x, -400);
-    scale(2);
-    noStroke();
-    fill(200, 0, 0);
-    triangle(30, 210, 170, 200, 196, 235);
-    triangle(10, 190, 170, 180, 170, 210);
-    triangle(50, 160, 200, 165, 170, 190);
-    ellipse(200, 200, 70);
-    fill(255, 158, 0);
-    ellipse(200, 200, 60);
-    triangle(30, 190, 175, 185, 175, 205);
-    triangle(50, 210, 175, 205, 196, 230);
-    triangle(70, 162, 200, 170, 180, 190);
-    fill(0);
-    ellipse(200, 200, 50);
-  }
-
-  drawLion() {
-    translate(this.x, -300);
-    fill(104, 60, 17);
-    strokeWeight(1.5)
-    stroke(0)
-    triangle(215, 155, 185, 155, 200, 100);
-    triangle(185, 155, 155, 175, 140, 110);
-    triangle(210, 155, 240, 175, 240, 110);
-    triangle(155, 175, 145, 210, 100, 160);
-    triangle(235, 165, 260, 210, 290, 160);
-    triangle(145, 200, 145, 230, 90, 210);
-    triangle(255, 200, 245, 240, 320, 210);
-    triangle(145, 230, 155, 250, 100, 270);
-    triangle(255, 230, 240, 250, 290, 270);
-    triangle(155, 250, 185, 260, 140, 310);
-    triangle(245, 250, 210, 260, 270, 310);
-    triangle(225, 250, 175, 260, 200, 330);
-
-    fill(249, 178, 51);
-    ellipse(140, 190, 40, 40);
-    ellipse(260, 190, 40, 40);
-    ellipse(200, 210, 120, 120);
-    fill(255);
-    ellipse(230, 210, 27);
-    ellipse(170, 210, 27);
-    ellipse(200, 250, 50, 40);
-    fill(0);
-    ellipse(230, 210, 20);
-    ellipse(170, 210, 20);
-    triangle(215, 230, 185, 230, 200, 240);
-    noFill();
-    arc(210, 245, 20, 20, 0, PI + QUARTER_PI);
-    arc(190, 245, 20, 20, -PI + QUARTER_PI * 3, HALF_PI + QUARTER_PI * 2);
-  }
   drawWindow() {
     translate(0, -200);
     scale(0.8);
@@ -1103,7 +1337,6 @@ class Enemy {
     ellipse(112, 100, 50); //Wolke
     ellipse(85, 92, 40); //Wolke
     ellipse(120, 75, 40); //Wolke
-
     noFill();
     stroke(51, 24, 0);
     strokeWeight(12);
@@ -1119,7 +1352,6 @@ class Enemy {
     triangle(300, 165, 315, 145, 315, 165); //ZAHN
     triangle(282, 117, 297, 137, 302, 117); //ZAHN
     triangle(302, 115, 315, 135, 312, 115); //ZAHN
-
     fill(104, 60, 49);
     rect(100, 150, 130, 60, 40, 0, 0, 0); //Bauch
     rect(100, 200, 23, 60, 5); //Bein
@@ -1129,7 +1361,6 @@ class Enemy {
     ellipse(308, 95, 15); //Nase
     triangle(200, 170, 200, 100, 230, 130); //Ohr
     triangle(220, 160, 220, 90, 250, 120); //Ohr
-
     fill(255, 255, 5);
     ellipse(250, 130, 10); //Auge
     fill(0);
@@ -1137,7 +1368,6 @@ class Enemy {
     strokeWeight(3);
     stroke(0);
     line(245, 120, 260, 122); //Auge
-
     noFill();
     strokeWeight(10);
     line(380, 130, 500, 130); //Bell
@@ -1146,6 +1376,7 @@ class Enemy {
     stroke(104, 60, 49);
     arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
+
   drawClaw() {
     translate(0, -250);
     noFill();
@@ -1172,100 +1403,51 @@ class Enemy {
 
   drawBrick() {
     noStroke();
-  fill(187, 75, 47);
-  rect(20, 20, 105, 60);//Background
-
-  fill(135, 74, 57);
-  rect(25, 25, 5);//.__.
-  rect(25, 70, 5);//.__.
-  rect(25, 52, 5, 15);//.__.
-  rect(25, 33, 5, 15);//.__.
-
-  rect(35, 25, 5, 15);//___
-  rect(35, 42.5, 5, 15);//___
-  rect(35, 60, 5, 15);//___
-
-  rect(45, 25, 5);//.__.
-  rect(45, 70, 5);//.__.
-  rect(45, 52, 5, 15);//.__.
-  rect(45, 33, 5, 15);//.__.
-
-  rect(55, 42, 35, 15);//l__l
-
-  rect(95, 25, 5);//.__.
-  rect(95, 70, 5);//.__.
-  rect(95, 52, 5, 15);//.__.
-  rect(95, 33, 5, 15);//.__.
-
-  rect(105, 25, 5, 15);//___
-  rect(105, 42.5, 5, 15);//___
-  rect(105, 60, 5, 15);//___
-
-  rect(115, 25, 5);//.__.
-  rect(115, 70, 5);//.__.
-  rect(115, 52, 5, 15);//.__.
-  rect(115, 33, 5, 15);//.__.
-
-  rect(55, 25, 5, 15);//_ o
-  rect(65, 25, 5, 15);//_ o
-  rect(75, 25, 5, 15);//_ o
-  rect(85, 25, 5, 15);//_ o
-
-  rect(55, 60, 5, 15);//_ u
-  rect(65, 60, 5, 15);//_ u
-  rect(75, 60, 5, 15);//_ u
-  rect(85, 60, 5, 15);//_ u
+    fill(187, 75, 47);
+    rect(20, 20, 105, 60); //Background
+    fill(135, 74, 57);
+    rect(25, 25, 5); //.__.
+    rect(25, 70, 5); //.__.
+    rect(25, 52, 5, 15); //.__.
+    rect(25, 33, 5, 15); //.__.
+    rect(35, 25, 5, 15); //___
+    rect(35, 42.5, 5, 15); //___
+    rect(35, 60, 5, 15); //___
+    rect(45, 25, 5); //.__.
+    rect(45, 70, 5); //.__.
+    rect(45, 52, 5, 15); //.__.
+    rect(45, 33, 5, 15); //.__.
+    rect(55, 42, 35, 15); //l__l
+    rect(95, 25, 5); //.__.
+    rect(95, 70, 5); //.__.
+    rect(95, 52, 5, 15); //.__.
+    rect(95, 33, 5, 15); //.__.
+    rect(105, 25, 5, 15); //___
+    rect(105, 42.5, 5, 15); //___
+    rect(105, 60, 5, 15); //___
+    rect(115, 25, 5); //.__.
+    rect(115, 70, 5); //.__.
+    rect(115, 52, 5, 15); //.__.
+    rect(115, 33, 5, 15); //.__.
+    rect(55, 25, 5, 15); //_ o
+    rect(65, 25, 5, 15); //_ o
+    rect(75, 25, 5, 15); //_ o
+    rect(85, 25, 5, 15); //_ o
+    rect(55, 60, 5, 15); //_ u
+    rect(65, 60, 5, 15); //_ u
+    rect(75, 60, 5, 15); //_ u
+    rect(85, 60, 5, 15); //_ u
   }
 
   move() {
-    let speed;
-    let height;
-    switch (currentLevel) {
-      case 1:
-        speed = 5;
-        height = 150;
-        break;
-      case 2:
-        speed = 10;
-        height = 500;
-        break;
-      case 3:
-        speed = 6;
-        height = 500;
-        break;
-      case 4:
-        speed = 5;
-        height = 250;
-        break;
-      case 5:
-        speed = 12;
-        height = 300;
-        break;
-      case 6:
-        speed = 7;
-        height =200;
-        break;
-      case 7:
-        speed = 8;
-        height = 500;
-        break;
-      case 8:
-        speed = 15;
-        height = 200;
-        break;
-      default:
-        speed = 2;
-    }
-
-    this.x += speed;
-    this.y = height;
-    this.updateHitbox();
+    this.x += this.speed; // Use the this.speed to move the enemy
+    this.updateHitbox(); // Move hitbox with enemy
   }
-
   checkCollision() {
     return checkCollision(this, player);
   }
 }
+
 
 class Hitbox {
   constructor(x, y, width, height) {
@@ -1288,7 +1470,7 @@ class Hitbox {
 function drawHitboxes() {
   noFill();
   stroke(255, 0, 0); // Red color for hitboxes
-  strokeWeight(2); // Thicker lines for visibility
+  strokeWeight(1); // Thicker lines for visibility
   rect(
     player.hitbox.x,
     player.hitbox.y,
