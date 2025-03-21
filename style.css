@@ -1,7 +1,146 @@
-html, body {
-    margin: 0;
-    padding: 0;
-  }
-  canvas {
-    display: block;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@font-face {
+  font-family: 'LomoWall';
+  src: url('assets/LomoWall.otf');
+}
+@font-face {
+  font-family: 'Lomo';
+  src: url('fonts/Lomo2.otf');
+}
+canvas {
+  display: block;
+}
+
+.absolute {
+  position: absolute;
+}
+
+#touch-ui-trigger,
+ #touch-ui {
+  visibility: hidden;
+}
+
+#touch-ui.active,
+#touch-ui-trigger.active {
+  visibility: visible;
+}
+
+#touch-ui-trigger {
+  top: 10px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: rgb(255, 0, 225);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#touch-ui {
+  bottom: 10px;
+  right: 10px;
+  border-radius: 6px;
+  padding: 10px;
+
+  /* Layout*/
+  display: grid;
+  grid-template-columns: min-content min-content min-content;
+}
+
+.touch-ui-button {
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+#touch-ui-up {
+  background-color: rgb(255, 0, 0); 
+}
+
+#touch-ui-right {
+  background-color: rgb(0, 0, 255); 
+}
+
+#touch-ui-down {
+  background-color: rgb(0, 255,0); 
+}
+
+#touch-ui-left {
+  background-color: rgb(160,32,240);
+}
+
+
+.touch-ui-button::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+#touch-ui-up::after {
+  border-width: 0 20px 30px 20px;
+  border-color: transparent transparent rgb(255, 0, 255) transparent;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -75%);
+}
+
+#touch-ui-right::after {
+  border-width: 20px 0 20px 30px;
+  border-color: transparent transparent transparent rgb(0, 255, 255);
+  top: 50%;
+  left: 45%;
+  transform: translate(-25%, -50%);
+}
+
+#touch-ui-down::after {
+  border-width: 30px 20px 0 20px;
+  border-color: rgb(255, 255, 0) transparent transparent transparent;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -25%);
+}
+
+#touch-ui-left::after {
+  border-width: 20px 30px 20px 0;
+  border-color: transparent rgb(255,165,0) transparent transparent;
+  top: 50%;
+  left: 55%;
+  transform: translate(-75%, -50%);
+}
+
+
+#touch-ui-up { grid-column: 2/3; grid-row: 1 }
+#touch-ui-right { grid-column: 3/4; grid-row: 2}
+#touch-ui-down { grid-column: 2/3; grid-row: 3}
+#touch-ui-left { grid-column: 1/2; grid-row: 2}
+
+#name-input {
+  font-family: 'Lomo2';
+  font-size: 20px;
+  text-align: center;
+  border: rgb(1, 122, 122); /* Black border */
+  padding: 5px;
+  background-color: rgb(134, 255, 255);
+  color: rgb(255, 0, 255);
+}
+
+
+name-input[type=text]:focus {
+  background-color: lightblue;
+}
