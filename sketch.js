@@ -33,62 +33,81 @@ let uiLeft = document.getElementById("touch-ui-left");
 let uiRight = document.getElementById("touch-ui-right");
 
 uiUp.addEventListener("mousedown", () => {
-  player.movingUp = true;});
+  player.movingUp = true;
+});
 uiUp.addEventListener("mouseup", () => {
-  player.movingUp = false;});
+  player.movingUp = false;
+});
 uiUp.addEventListener("mouseleave", () => {
-  player.movingUp = false;});
+  player.movingUp = false;
+});
 
 uiDown.addEventListener("mousedown", () => {
-  player.movingDown = true;});
+  player.movingDown = true;
+});
 uiDown.addEventListener("mouseup", () => {
-  player.movingDown = false;});
+  player.movingDown = false;
+});
 uiDown.addEventListener("mouseleave", () => {
-  player.movingDown = false;});
+  player.movingDown = false;
+});
 
 uiLeft.addEventListener("mousedown", () => {
-  player.movingLeft = true;});
+  player.movingLeft = true;
+});
 uiLeft.addEventListener("mouseup", () => {
-  player.movingLeft = false;});
+  player.movingLeft = false;
+});
 uiLeft.addEventListener("mouseleave", () => {
-  player.movingLeft = false;});
+  player.movingLeft = false;
+});
 
-  uiRight.addEventListener("mousedown", () => {
-    player.movingRight = true;});
-  uiRight.addEventListener("mouseup", () => {
-    player.movingRight = false;});
-  uiRight.addEventListener("mouseleave", () => {
-    player.movingRight = false;});
-  
-  uiUp.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    player.movingUp = true;});
-  uiUp.addEventListener("touchend", () => {
-    player.moveUp = false;});
-  
-  uiDown.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    player.moveDown = true;});
-  uiDown.addEventListener("touchend", () => {
-    player.moveDown = false; });
-  
-  uiLeft.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    player.moveLeft = true; });
-  uiLeft.addEventListener("touchend", () => {
-    player.moveLeft = false;});
-  
-  uiRight.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    player.moveRight = true; });
-  uiRight.addEventListener("touchend", () => {
-    player.moveRight = false; });
+uiRight.addEventListener("mousedown", () => {
+  player.movingRight = true;
+});
+uiRight.addEventListener("mouseup", () => {
+  player.movingRight = false;
+});
+uiRight.addEventListener("mouseleave", () => {
+  player.movingRight = false;
+});
 
-  uiTrigger.addEventListener("click", () => {
-    ui.classList.toggle("active");
-  });
-  
- 
+uiUp.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  player.movingUp = true;
+});
+uiUp.addEventListener("touchend", () => {
+  player.moveUp = false;
+});
+
+uiDown.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  player.moveDown = true;
+});
+uiDown.addEventListener("touchend", () => {
+  player.moveDown = false;
+});
+
+uiLeft.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  player.moveLeft = true;
+});
+uiLeft.addEventListener("touchend", () => {
+  player.moveLeft = false;
+});
+
+uiRight.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  player.moveRight = true;
+});
+uiRight.addEventListener("touchend", () => {
+  player.moveRight = false;
+});
+
+uiTrigger.addEventListener("click", () => {
+  ui.classList.toggle("active");
+});
+
 function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
@@ -97,7 +116,7 @@ function preload() {
     console.log("meteor.wav loaded")
   );
   fruitSound = loadSound("sound/Fruit.mp3", () =>
-    console.log("fruit.wav loaded")
+    console.log("Fruit.wav loaded")
   );
   lionSound = loadSound("sound/Lion.mp3", () => console.log("lion.wav loaded"));
 }
@@ -365,7 +384,6 @@ function showNextLevelScreen() {
   text("CONTINUE", width / 2, height / 2 + 200);
 }
 
-
 //wann Enemy
 function checkEnemySpawn() {
   let spawnScore;
@@ -431,18 +449,20 @@ function mousePressed() {
       initializeGame();
     }
   } else if (nextLevel) {
-    if ( mouseX > width / 2 - 60 &&
+    if (
+      mouseX > width / 2 - 60 &&
       mouseX < width / 2 + 60 &&
       mouseY > height / 2 + 180 &&
-      mouseY < height / 2 + 220 ) {
+      mouseY < height / 2 + 220
+    ) {
       console.log("Continue clicked, current level:", currentLevel); // Add debugging
       nextLevel = false;
       currentLevel++; // ncrease the level
-      console.log("New level:", currentLevel); 
+      console.log("New level:", currentLevel);
       if (currentLevel > 2) {
         hasWon = true;
       } else {
-        initializeGame(); 
+        initializeGame();
       }
     }
   } else if (hasWon) {
@@ -458,7 +478,6 @@ function mousePressed() {
     }
   }
 }
-
 
 function spawnFood() {
   let x = random(-width, 0);
@@ -491,13 +510,13 @@ function checkNextLevel() {
 }
 
 function showWinScreen() {
-  background(255, 0, 255); 
-  fill(255, 255, 0); 
+  background(255, 0, 255);
+  fill(255, 255, 0);
   textSize(50);
   textFont(myFont);
   textAlign(CENTER, CENTER);
   text("YOU‡WIN!", width / 2, height / 2);
-  fill(20, 0, 255); 
+  fill(20, 0, 255);
   textSize(20);
   textFont(myFont2);
   text("©MARIA ZIMMERMANN 2025", width / 2, height - 140);
@@ -525,7 +544,6 @@ class Player {
     this.movingRight = false;
   }
 
-
   updateHitbox() {
     let hitboxWidth, hitboxHeight;
 
@@ -550,7 +568,7 @@ class Player {
         hitboxWidth = this.size;
         hitboxHeight = this.size;
         break;
-      case 6:// Hoover
+      case 6: // Hoover
         hitboxWidth = this.size / 1.5;
         hitboxHeight = this.size / 1.4;
         break;
@@ -611,7 +629,7 @@ class Player {
   }
   drawDino() {
     scale(0.5);
-    translate(-200, -200);//Krone
+    translate(-200, -200); //Krone
     noStroke(0);
     fill(0, 165, 45);
     ellipse(100, 220, 100);
@@ -621,12 +639,12 @@ class Player {
     ellipse(300, 220, 100);
     ellipse(310, 160, 100);
     ellipse(290, 100, 100);
-    ellipse(200, 170, 250, 220);//Kopf
+    ellipse(200, 170, 250, 220); //Kopf
     stroke(1);
     fill(0, 124, 78);
-    ellipse(200, 200, 200, 180);//Schnauze
+    ellipse(200, 200, 200, 180); //Schnauze
     fill(0, 165, 45);
-    ellipse(200, 260, 100, 80);//Augen, Nase
+    ellipse(200, 260, 100, 80); //Augen, Nase
     fill(0);
     ellipse(140, 210, 20);
     ellipse(260, 210, 20);
@@ -648,10 +666,10 @@ class Player {
     ellipse(170, 90, 25);
     ellipse(220, 90, 25);
     rect(162, 90, 15, 50);
-    rect(212, 90, 15, 50);//Ohr
+    rect(212, 90, 15, 50); //Ohr
     ellipse(280, 150, 80, 50);
     ellipse(120, 150, 80, 50);
-    fill(255, 176, 49);//Kopf
+    fill(255, 176, 49); //Kopf
     ellipse(200, 200, 150, 100);
     triangle(135, 220, 200, 300, 265, 220);
     fill(224, 130, 6);
@@ -764,7 +782,7 @@ class Player {
     rect(230, 20, 10, 70);
     fill(20);
     rect(220, 20, 10, 70, 20, 0, 0, 20);
-    rect(205, 30, 18, 50, 10, 0, 0, 10);//Body
+    rect(205, 30, 18, 50, 10, 0, 0, 10); //Body
     fill(200, 200, 2);
     noStroke();
     rect(50, 150, 100, 70, 0, 50, 50, 0);
@@ -862,7 +880,7 @@ class Food {
     if (this.level === 1) {
       offsetX = this.size * 9.1;
       offsetY = this.size * 9.5;
-     // Friut
+      // Friut
     } else if (this.level === 2) {
       hitboxSize = this.size * 2;
       offsetX = this.size * 3.8;
@@ -876,7 +894,7 @@ class Food {
       offsetX = this.size * 8;
       offsetY = this.size * 3;
     } // Worm
- else if (this.level === 5) {
+    else if (this.level === 5) {
       offsetX = this.size * 7;
       offsetY = this.size * 7;
     } // Dust
@@ -1099,36 +1117,36 @@ class Enemy {
       // Set different enemy speeds for each Level
       case 1:
         this.speed = 5;
-        this.baseY = 150; 
+        this.baseY = 150;
         break;
       case 2:
         this.speed = 8;
-        this.baseY = 500; 
+        this.baseY = 500;
         break;
-        case 3:
+      case 3:
         this.speed = 6;
-        this.baseY = 500; 
+        this.baseY = 500;
         break;
-        case 4:
+      case 4:
         this.speed = 5;
-        this.baseY = 250; 
+        this.baseY = 250;
         break;
-        case 5:
-          this.speed = 12;
-          this.baseY = 300; 
-          break;
-          case 6:
-          this.speed = 7;
-          this.baseY =200; 
-          break;
-          case 7:
-            this.speed = 8;
-            this.baseY =500; 
-            break;
-            case 8:
-              this.speed = 15;
-              this.baseY =200; 
-              break;
+      case 5:
+        this.speed = 12;
+        this.baseY = 300;
+        break;
+      case 6:
+        this.speed = 7;
+        this.baseY = 200;
+        break;
+      case 7:
+        this.speed = 8;
+        this.baseY = 500;
+        break;
+      case 8:
+        this.speed = 15;
+        this.baseY = 200;
+        break;
     }
     this.y = this.baseY; //Set the Y here
     this.updateHitbox();
@@ -1440,7 +1458,6 @@ class Enemy {
     return checkCollision(this, player);
   }
 }
-
 
 class Hitbox {
   constructor(x, y, width, height) {
