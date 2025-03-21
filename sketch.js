@@ -52,6 +52,9 @@ uiLeft.addEventListener("mouseup", () => {
   player.movingLeft = false;});
 uiLeft.addEventListener("mouseleave", () => {
   player.movingLeft = false;});
+
+  uiRight.addEventListener("mousedown", () => {
+    player.movingRight = true;});
   uiRight.addEventListener("mouseup", () => {
     player.movingRight = false;});
   uiRight.addEventListener("mouseleave", () => {
