@@ -401,7 +401,7 @@ function checkEnemySpawn() {
       spawnScore = 15;
   }
 
-  if (score >= 1 && !enemyActive) {
+  if (score >= spawnScore && !enemyActive) {
     enemyActive = true;
     enemy.x = -200;
     if (currentLevel === 1 && meteorSound) meteorSound.play();
