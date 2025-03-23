@@ -392,7 +392,7 @@ function checkEnemySpawn() {
       spawnScore = 18;
       break;
     case 7:
-      spawnScore = 4;
+      spawnScore = 24;
       break;
     case 8:
       spawnScore = 14;
@@ -448,9 +448,9 @@ function mousePressed() {
     ) {
       console.log("Continue clicked, current level:", currentLevel); // Add debugging
       nextLevel = false;
-      currentLevel++; // ncrease the level
+      currentLevel++; 
       console.log("New level:", currentLevel);
-      if (currentLevel > 2) {
+      if (currentLevel > 7) {
         hasWon = true;
       } else {
         initializeGame();
@@ -491,7 +491,7 @@ function checkNextLevel() {
       "Player big enough for next level, current level:",
       currentLevel
     );
-    if (currentLevel >= 2) {
+    if (currentLevel >= 8) {
       // Only win if already on level 2
       hasWon = true;
     } else {
@@ -1160,12 +1160,12 @@ class Enemy {
       hitboxHeight = this.size;
       hitboxWidth = this.size;
       offsetY = -this.size + 15;
+      offsetX = this.size*2;
       //ORCA
     } else if (this.level === 3) {
       hitboxWidth *= 4;
       hitboxHeight *= 0.9;
       offsetY = -this.size / 8;
-      drawing;
       offsetX = this.size - 110;
       //CAR
     } else if (this.level === 4) {
