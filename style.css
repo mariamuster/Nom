@@ -8,12 +8,12 @@ body {
   background-color: lightcoral;
 }
 @font-face {
-  font-family: 'LomoWall';
-  src: url('assets/LomoWall.otf');
+  font-family: "LomoWall";
+  src: url("assets/LomoWall.otf");
 }
 @font-face {
-  font-family: 'Lomo';
-  src: url('fonts/Lomo2.otf');
+  font-family: "Lomo";
+  src: url("fonts/Lomo2.otf");
 }
 canvas {
   display: block;
@@ -24,7 +24,7 @@ canvas {
 }
 
 #touch-ui-trigger,
- #touch-ui {
+#touch-ui {
   visibility: hidden;
 }
 
@@ -69,23 +69,23 @@ canvas {
   overflow: hidden;
 }
 #touch-ui-up {
-  background-color: rgb(255, 0, 0); 
+  background-color: rgb(255, 0, 0);
 }
 
 #touch-ui-right {
-  background-color: rgb(0, 0, 255); 
+  background-color: rgb(0, 0, 255);
 }
 
 #touch-ui-down {
-  background-color: rgb(0, 255,0); 
+  background-color: rgb(0, 255, 0);
 }
 
 #touch-ui-left {
-  background-color: rgb(160,32,240);
+  background-color: rgb(160, 32, 240);
 }
 
 #title {
-  font-family: 'LomoWall';
+  font-family: "LomoWall";
   background: none;
   font-size: 20vw;
   border: none;
@@ -94,7 +94,7 @@ canvas {
 }
 
 .touch-ui-button::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 0;
@@ -127,33 +127,43 @@ canvas {
 
 #touch-ui-left::after {
   border-width: 20px 30px 20px 0;
-  border-color: transparent rgb(255,165,0) transparent transparent;
+  border-color: transparent rgb(255, 165, 0) transparent transparent;
   top: 50%;
   left: 55%;
   transform: translate(-75%, -50%);
 }
 
-
-#touch-ui-up { grid-column: 2/3; grid-row: 1 }
-#touch-ui-right { grid-column: 3/4; grid-row: 2}
-#touch-ui-down { grid-column: 2/3; grid-row: 3}
-#touch-ui-left { grid-column: 1/2; grid-row: 2}
-
+#touch-ui-up {
+  grid-column: 2/3;
+  grid-row: 1;
+}
+#touch-ui-right {
+  grid-column: 3/4;
+  grid-row: 2;
+}
+#touch-ui-down {
+  grid-column: 2/3;
+  grid-row: 3;
+}
+#touch-ui-left {
+  grid-column: 1/2;
+  grid-row: 2;
+}
 
 #green-button {
-  font-family: 'LomoWall';
+  font-family: "LomoWall";
   background: none;
   padding: 40px;
   font-size: 30px;
   cursor: pointer;
   border: none;
   left: 50%;
-  transform: translate(-50%, -0%);  
+  transform: translate(-50%, -0%);
   color: rgb(132, 255, 0);
 }
 
 #start-button {
-  font-family: 'LomoWall';
+  font-family: "LomoWall";
   background: none;
   font-size: 30px;
   cursor: pointer;
@@ -164,7 +174,7 @@ canvas {
 }
 
 #name-button {
-  font-family: 'Lomo2';
+  font-family: "Lomo2";
   background: none;
   font-size: 30px;
   position: fixed;
@@ -174,10 +184,10 @@ canvas {
 }
 
 #name-input {
-  font-family: 'Lomo2';
+  font-family: "Lomo2";
   font-size: 20px;
   text-align: center;
-  position:fixed;
+  position: fixed;
   bottom: 100px;
   border: rgb(1, 122, 122); /* Black border */
   padding: 5px;
@@ -185,7 +195,6 @@ canvas {
   color: rgb(255, 0, 255);
 }
 
-
-name-input[type=text]:focus {
+name-input[type="text"]:focus {
   background-color: lightblue;
 }

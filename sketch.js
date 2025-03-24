@@ -13,7 +13,7 @@ let debugMode = false;
 let myFont;
 let myFont2;
 
-let lastSoundPlayTime = 0; 
+let lastSoundPlayTime = 0;
 const soundCooldown = 320;
 let leafSound;
 let meteorSound;
@@ -37,7 +37,7 @@ let playerName = "";
 let highScores = [];
 let startButton;
 let nameInput;
-let nameButton
+let nameButton;
 
 // html elements (ui)
 let uiTrigger = document.getElementById("touch-ui-trigger");
@@ -134,17 +134,17 @@ function setup() {
 
   nameInput = createInput();
   nameInput.id("name-input"); // Set the ID for CSS styling
-  nameInput.position('auto', 'auto');
+  nameInput.position("auto", "auto");
   nameInput.size(200);
 
   startButton = createButton("Go!");
   startButton.id("start-button"); // Set the ID for CSS styling
-  startButton.position('auto', 'auto');
+  startButton.position("auto", "auto");
   startButton.mousePressed(startGame);
 
   nameButton = createButton("Name:");
   nameButton.id("name-button"); // Set the ID for CSS styling
-  nameButton.position('auto', 'auto');
+  nameButton.position("auto", "auto");
 
   // Initially show the input
   nameInput.show();
@@ -162,10 +162,8 @@ function startScreen() {
   text("Nom", width / 2, height / 2);
 
   startButton.show();
-  nameInput.show();  
+  nameInput.show();
   nameButton.show();
-
-
 }
 
 function startGame() {
@@ -236,7 +234,7 @@ function draw() {
             food.splice(i, 1);
             score++;
             spawnFood();
-            playLevelSound(); 
+            playLevelSound();
             powerUp();
             checkEnemySpawn();
           }
@@ -297,7 +295,7 @@ function draw() {
             food.splice(i, 1);
             score++;
             spawnFood();
-            playLevelSound(); 
+            playLevelSound();
             powerUp();
             checkEnemySpawn();
           }
@@ -545,7 +543,7 @@ function mousePressed() {
       mouseY > height / 2 + 180 &&
       mouseY < height / 2 + 220
     ) {
-      console.log("Restart clicked"); 
+      console.log("Restart clicked");
       currentLevel = 1;
       gameOver = false;
       gameState = "PLAY";
@@ -558,7 +556,7 @@ function mousePressed() {
       mouseY > height / 2 + 180 &&
       mouseY < height / 2 + 220
     ) {
-      console.log("Continue clicked, current level:", currentLevel); 
+      console.log("Continue clicked, current level:", currentLevel);
       nextLevel = false;
       currentLevel++;
       console.log("New level:", currentLevel);
@@ -606,7 +604,7 @@ function checkNextLevel() {
     if (currentLevel >= 8) {
       hasWon = true;
     } else {
-      nextLevel = true; 
+      nextLevel = true;
     }
   }
 }
@@ -1249,7 +1247,7 @@ class Enemy {
         this.baseY = 200;
         break;
     }
-    this.y = this.baseY; 
+    this.y = this.baseY;
     this.updateHitbox();
   }
 
@@ -1510,7 +1508,7 @@ class Enemy {
     fill(255);
     ellipse(208, 240, 5); //Auge w
     fill(0);
-    ellipse(209, 241, 3); //Auge s 
+    ellipse(209, 241, 3); //Auge s
     arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
 
@@ -1553,7 +1551,7 @@ class Enemy {
   }
 
   move() {
-    this.x += this.speed; 
+    this.x += this.speed;
     this.updateHitbox();
   }
   checkCollision() {
@@ -1582,7 +1580,7 @@ class Hitbox {
 function drawHitboxes() {
   noFill();
   stroke(255, 0, 0);
-  strokeWeight(1); 
+  strokeWeight(1);
   rect(
     player.hitbox.x,
     player.hitbox.y,
