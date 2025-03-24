@@ -5,6 +5,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: lightcoral;
 }
 @font-face {
   font-family: 'LomoWall';
@@ -139,20 +140,6 @@ canvas {
 #touch-ui-left { grid-column: 1/2; grid-row: 2}
 
 
-
-#start-button {
-  font-family: 'LomoWall';
-  background: none;
-  padding: 50px;
-  font-size: 30px;
-  cursor: pointer;
-  position: fixed;
-  border: none;
-  left: 50%;
-  transform: translate(-50%, -0%);  
-  color: rgb(255, 255, 255);
-}
-
 #green-button {
   font-family: 'LomoWall';
   background: none;
@@ -165,12 +152,33 @@ canvas {
   color: rgb(132, 255, 0);
 }
 
+#start-button {
+  font-family: 'LomoWall';
+  background: none;
+  font-size: 30px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 50px;
+  border: none;
+  color: rgb(255, 255, 255);
+}
 
+#name-button {
+  font-family: 'Lomo2';
+  background: none;
+  font-size: 30px;
+  position: fixed;
+  bottom: 140px;
+  border: none;
+  color: rgb(255, 255, 255);
+}
 
 #name-input {
   font-family: 'Lomo2';
   font-size: 20px;
   text-align: center;
+  position:fixed;
+  bottom: 100px;
   border: rgb(1, 122, 122); /* Black border */
   padding: 5px;
   background-color: rgb(134, 255, 255);

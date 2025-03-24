@@ -13,7 +13,7 @@ let debugMode = false;
 let myFont;
 let myFont2;
 
-let lastSoundPlayTime = 0; // Time when the sound was last played
+let lastSoundPlayTime = 0; 
 const soundCooldown = 320;
 let leafSound;
 let meteorSound;
@@ -37,6 +37,7 @@ let playerName = "";
 let highScores = [];
 let startButton;
 let nameInput;
+let nameButton
 
 // html elements (ui)
 let uiTrigger = document.getElementById("touch-ui-trigger");
@@ -77,29 +78,53 @@ uiTrigger.addEventListener("click", () => {
   ui.classList.toggle("active");
 });
 
-
-
-
 function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
-  leafSound = loadSound("sound/1Leaf.m4a", () => console.log("leaf.wav loaded"));
-  meteorSound = loadSound("sound/1Meteor.m4a", () => console.log("meteor.wav loaded"));
-  fruitSound = loadSound("sound/2Fruit.m4a", () => console.log("Fruit.wav loaded"));
-  lionSound = loadSound("sound/2Lion.m4a", () => console.log("lion.wav loaded"));
-  fishSound = loadSound("sound/3Fish.m4a", () => console.log("fish.wav loaded"));
-  orcaSound = loadSound("sound/3Orca.m4a", () => console.log("orca.wav loaded"));
-  mouseSound = loadSound("sound/4Mouse.m4a", () => console.log("mouse.wav loaded"));
+  leafSound = loadSound("sound/1Leaf.m4a", () =>
+    console.log("leaf.wav loaded")
+  );
+  meteorSound = loadSound("sound/1Meteor.m4a", () =>
+    console.log("meteor.wav loaded")
+  );
+  fruitSound = loadSound("sound/2Fruit.m4a", () =>
+    console.log("Fruit.wav loaded")
+  );
+  lionSound = loadSound("sound/2Lion.m4a", () =>
+    console.log("lion.wav loaded")
+  );
+  fishSound = loadSound("sound/3Fish.m4a", () =>
+    console.log("fish.wav loaded")
+  );
+  orcaSound = loadSound("sound/3Orca.m4a", () =>
+    console.log("orca.wav loaded")
+  );
+  mouseSound = loadSound("sound/4Mouse.m4a", () =>
+    console.log("mouse.wav loaded")
+  );
   carSound = loadSound("sound/4Car.m4a", () => console.log("car.wav loaded"));
-  wormSound = loadSound("sound/5Worm.m4a", () => console.log("worm.wav loaded"));
-  windowSound = loadSound("sound/5Window.m4a", () => console.log("window.wav loaded"));
-  dustSound = loadSound("sound/6Dust.m4a", () => console.log("dust.wav loaded"));
+  wormSound = loadSound("sound/5Worm.m4a", () =>
+    console.log("worm.wav loaded")
+  );
+  windowSound = loadSound("sound/5Window.m4a", () =>
+    console.log("window.wav loaded")
+  );
+  dustSound = loadSound("sound/6Dust.m4a", () =>
+    console.log("dust.wav loaded")
+  );
   dogSound = loadSound("sound/6Dog.m4a", () => console.log("dog.wav loaded"));
-  coinSound = loadSound("sound/7Coin.m4a", () => console.log("coin.wav loaded"));
-  clawSound = loadSound("sound/7Claw.m4a", () => console.log("claw.wav loaded"));
-  sockSound = loadSound("sound/8Sock.m4a", () => console.log("sock.wav loaded"));
-  brickSound = loadSound("sound/8Brick.m4a", () => console.log("brick.wav loaded"));
-
+  coinSound = loadSound("sound/7Coin.m4a", () =>
+    console.log("coin.wav loaded")
+  );
+  clawSound = loadSound("sound/7Claw.m4a", () =>
+    console.log("claw.wav loaded")
+  );
+  sockSound = loadSound("sound/8Sock.m4a", () =>
+    console.log("sock.wav loaded")
+  );
+  brickSound = loadSound("sound/8Brick.m4a", () =>
+    console.log("brick.wav loaded")
+  );
 }
 
 function setup() {
@@ -109,19 +134,23 @@ function setup() {
 
   nameInput = createInput();
   nameInput.id("name-input"); // Set the ID for CSS styling
-  nameInput.position(width / 2 - 103, height - 140);
+  nameInput.position('auto', 'auto');
   nameInput.size(200);
 
-
-  startButton = createButton("Go");
+  startButton = createButton("Go!");
   startButton.id("start-button"); // Set the ID for CSS styling
-  startButton.position(width / 2, height / 2+230);
+  startButton.position('auto', 'auto');
   startButton.mousePressed(startGame);
+
+  nameButton = createButton("Name:");
+  nameButton.id("name-button"); // Set the ID for CSS styling
+  nameButton.position('auto', 'auto');
 
   // Initially show the input
   nameInput.show();
 
-  startButton.hide(); // Hide start button initially
+  startButton.hide();
+  nameButton.hide(); // Hide start button initially
 }
 
 function startScreen() {
@@ -133,14 +162,10 @@ function startScreen() {
   text("Nom", width / 2, height / 2);
 
   startButton.show();
+  nameInput.show();  
+  nameButton.show();
 
-  nameInput.show();
-  //startButton.hide();
 
-  textFont(myFont2);
-  textSize(30);
-  fill(255);
-  text("NAME:", width / 2, height - 160);
 }
 
 function startGame() {
@@ -151,6 +176,7 @@ function startGame() {
   gameState = "PLAY";
   nameInput.hide();
   startButton.hide();
+  nameButton.hide();
   uiTrigger.classList.add("active");
   initializeGame();
 }
@@ -196,162 +222,161 @@ function drawHitboxes() {
 
 function draw() {
   switch (gameState) {
-      case "START":
-          startScreen();
-          break;
-      case "PLAY":
-          if (!gameOver && !nextLevel && !hasWon) {
-              drawLevel();
+    case "START":
+      startScreen();
+      break;
+    case "PLAY":
+      if (!gameOver && !nextLevel && !hasWon) {
+        drawLevel();
 
-              for (let i = food.length - 1; i >= 0; i--) {
-                  food[i].show();
-                  food[i].move();
-                  if (food[i].checkCollision()) {
-                      food.splice(i, 1);
-                      score++;
-                      spawnFood();
-                      playLevelSound(); // Play sound when food is hit
-                      powerUp();
-                      checkEnemySpawn();
-                  }
-                  if (food[i].x > width) {
-                      food.splice(i, 1);
-                      spawnFood();
-                  }
-                  if (enemyActive && food[i].enemyCollision()) {
-                      food.splice(i, 1);
-                  }
-              }
-
-              player.show();
-              player.move();
-              player.update();
-
-              if (enemyActive) {
-                  enemy.show();
-                  enemy.move();
-                  if (enemy.checkCollision()) {
-                      gameOver = true;
-                  }
-              }
-
-              // Display score
-              fill(getScoreColor());
-              textSize(40);
-              textFont(myFont);
-              textAlign(LEFT, TOP);
-              text(`Score: ${score}`, 10, 10);
-          } else if (gameOver) {
-              showGameOverScreen();
-          } else if (nextLevel) {
-              showNextLevelScreen();
-          } else if (hasWon) {
-              showWinScreen();
+        for (let i = food.length - 1; i >= 0; i--) {
+          food[i].show();
+          food[i].move();
+          if (food[i].checkCollision()) {
+            food.splice(i, 1);
+            score++;
+            spawnFood();
+            playLevelSound(); 
+            powerUp();
+            checkEnemySpawn();
           }
-          break;
+          if (food[i].x > width) {
+            food.splice(i, 1);
+            spawnFood();
+          }
+          if (enemyActive && food[i].enemyCollision()) {
+            food.splice(i, 1);
+          }
+        }
+
+        player.show();
+        player.move();
+        player.update();
+
+        if (enemyActive) {
+          enemy.show();
+          enemy.move();
+          if (enemy.checkCollision()) {
+            gameOver = true;
+          }
+        }
+
+        // Display score
+        fill(getScoreColor());
+        textSize(40);
+        textFont(myFont);
+        textAlign(LEFT, TOP);
+        text(`Score: ${score}`, 10, 10);
+      } else if (gameOver) {
+        showGameOverScreen();
+      } else if (nextLevel) {
+        showNextLevelScreen();
+      } else if (hasWon) {
+        showWinScreen();
+      }
+      break;
   }
 
   if (debugMode) {
-      drawHitboxes();
+    drawHitboxes();
   }
 }
 function draw() {
   switch (gameState) {
-      case "START":
-          startScreen();
-          break;
-      case "PLAY":
-          if (!gameOver && !nextLevel && !hasWon) {
-              drawLevel();
+    case "START":
+      startScreen();
+      break;
+    case "PLAY":
+      if (!gameOver && !nextLevel && !hasWon) {
+        drawLevel();
 
-              for (let i = food.length - 1; i >= 0; i--) {
-                  food[i].show();
-                  food[i].move();
-                  if (food[i].checkCollision()) {
-                      food.splice(i, 1);
-                      score++;
-                      spawnFood();
-                      playLevelSound(); // Play sound when food is hit
-                      powerUp();
-                      checkEnemySpawn();
-                  }
-                  if (food[i].x > width) {
-                      food.splice(i, 1);
-                      spawnFood();
-                  }
-                  if (enemyActive && food[i].enemyCollision()) {
-                      food.splice(i, 1);
-                  }
-              }
-
-              player.show();
-              player.move();
-              player.update();
-
-              if (enemyActive) {
-                  enemy.show();
-                  enemy.move();
-                  if (enemy.checkCollision()) {
-                      gameOver = true;
-                  }
-              }
-
-              // Display score
-              fill(getScoreColor());
-              textSize(40);
-              textFont(myFont);
-              textAlign(LEFT, TOP);
-              text(`Score: ${score}`, 10, 10);
-          } else if (gameOver) {
-              showGameOverScreen();
-          } else if (nextLevel) {
-              showNextLevelScreen();
-          } else if (hasWon) {
-              showWinScreen();
+        for (let i = food.length - 1; i >= 0; i--) {
+          food[i].show();
+          food[i].move();
+          if (food[i].checkCollision()) {
+            food.splice(i, 1);
+            score++;
+            spawnFood();
+            playLevelSound(); 
+            powerUp();
+            checkEnemySpawn();
           }
-          break;
+          if (food[i].x > width) {
+            food.splice(i, 1);
+            spawnFood();
+          }
+          if (enemyActive && food[i].enemyCollision()) {
+            food.splice(i, 1);
+          }
+        }
+
+        player.show();
+        player.move();
+        player.update();
+
+        if (enemyActive) {
+          enemy.show();
+          enemy.move();
+          if (enemy.checkCollision()) {
+            gameOver = true;
+          }
+        }
+
+        // Display score
+        fill(getScoreColor());
+        textSize(40);
+        textFont(myFont);
+        textAlign(LEFT, TOP);
+        text(`Score: ${score}`, 10, 10);
+      } else if (gameOver) {
+        showGameOverScreen();
+      } else if (nextLevel) {
+        showNextLevelScreen();
+      } else if (hasWon) {
+        showWinScreen();
+      }
+      break;
   }
 
   if (debugMode) {
-      drawHitboxes();
+    drawHitboxes();
   }
 }
 
-
 function playLevelSound() {
   if (millis() - lastSoundPlayTime > soundCooldown) {
-      let currentSound;
-      switch (currentLevel) {
-          case 1:
-              currentSound = leafSound;
-              break;
-          case 2:
-              currentSound = fruitSound;
-              break;
-          case 3:
-              currentSound = fishSound;
-              break;
-          case 4:
-              currentSound = mouseSound;
-              break;
-          case 5:
-              currentSound = wormSound;
-              break;
-          case 6:
-              currentSound = dustSound;
-              break;
-          case 7:
-              currentSound = coinSound;
-              break;
-          case 8:
-              currentSound = sockSound;
-              break;
-      }
+    let currentSound;
+    switch (currentLevel) {
+      case 1:
+        currentSound = leafSound;
+        break;
+      case 2:
+        currentSound = fruitSound;
+        break;
+      case 3:
+        currentSound = fishSound;
+        break;
+      case 4:
+        currentSound = mouseSound;
+        break;
+      case 5:
+        currentSound = wormSound;
+        break;
+      case 6:
+        currentSound = dustSound;
+        break;
+      case 7:
+        currentSound = coinSound;
+        break;
+      case 8:
+        currentSound = sockSound;
+        break;
+    }
 
-      if (currentSound) {
-          currentSound.play();
-          lastSoundPlayTime = millis(); // Update last play time
-      }
+    if (currentSound) {
+      currentSound.play();
+      lastSoundPlayTime = millis();
+    }
   }
 }
 
@@ -433,9 +458,8 @@ function showGameOverScreen() {
   textSize(30);
   text(`${playerName}: ${score}`, width / 2, height / 2 + 60);
 
-  // Make sure text is visible over the button
   textFont(myFont);
-  fill(0, 255, 0); // Black text for better contrast
+  fill(0, 255, 0);
   textSize(30);
   text("RESTART", width / 2, height / 2 + 200);
 }
@@ -452,7 +476,7 @@ function showNextLevelScreen() {
   text(`Score: ${score}`, width / 2, height / 2 + 60);
 
   textFont(myFont);
-  fill(0, 255, 0); // Black text for better contrast
+  fill(0, 255, 0);
   textSize(30);
   text("Continue", width / 2, height / 2 + 200);
 }
@@ -521,7 +545,7 @@ function mousePressed() {
       mouseY > height / 2 + 180 &&
       mouseY < height / 2 + 220
     ) {
-      console.log("Restart clicked"); // Add debugging
+      console.log("Restart clicked"); 
       currentLevel = 1;
       gameOver = false;
       gameState = "PLAY";
@@ -534,9 +558,9 @@ function mousePressed() {
       mouseY > height / 2 + 180 &&
       mouseY < height / 2 + 220
     ) {
-      console.log("Continue clicked, current level:", currentLevel); // Add debugging
+      console.log("Continue clicked, current level:", currentLevel); 
       nextLevel = false;
-      currentLevel++; 
+      currentLevel++;
       console.log("New level:", currentLevel);
       if (currentLevel > 8) {
         hasWon = true;
@@ -580,10 +604,9 @@ function checkNextLevel() {
       currentLevel
     );
     if (currentLevel >= 8) {
-      // Only win if already on level 2
       hasWon = true;
     } else {
-      nextLevel = true; // Otherwise show next level screen
+      nextLevel = true; 
     }
   }
 }
@@ -1190,10 +1213,9 @@ class Enemy {
     this.size = size;
     this.level = level;
     this.soundPlayed = false;
-    this.speed = 0; // Initialize speed here
+    this.speed = 0;
 
     switch (currentLevel) {
-      // Set different enemy speeds for each Level
       case 1:
         this.speed = 5;
         this.baseY = 150;
@@ -1227,7 +1249,7 @@ class Enemy {
         this.baseY = 200;
         break;
     }
-    this.y = this.baseY; //Set the Y here
+    this.y = this.baseY; 
     this.updateHitbox();
   }
 
@@ -1248,7 +1270,7 @@ class Enemy {
       hitboxHeight = this.size;
       hitboxWidth = this.size;
       offsetY = -this.size + 15;
-      offsetX = this.size*2;
+      offsetX = this.size * 2;
       //ORCA
     } else if (this.level === 3) {
       hitboxWidth *= 4;
@@ -1488,7 +1510,8 @@ class Enemy {
     fill(255);
     ellipse(208, 240, 5); //Auge w
     fill(0);
-    ellipse(209, 241, 3); //Auge s arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
+    ellipse(209, 241, 3); //Auge s 
+    arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
 
   drawBrick() {
@@ -1530,8 +1553,8 @@ class Enemy {
   }
 
   move() {
-    this.x += this.speed; // Use the this.speed to move the enemy
-    this.updateHitbox(); // Move hitbox with enemy
+    this.x += this.speed; 
+    this.updateHitbox();
   }
   checkCollision() {
     return checkCollision(this, player);
@@ -1558,8 +1581,8 @@ class Hitbox {
 
 function drawHitboxes() {
   noFill();
-  stroke(255, 0, 0); // Red color for hitboxes
-  strokeWeight(1); // Thicker lines for visibility
+  stroke(255, 0, 0);
+  strokeWeight(1); 
   rect(
     player.hitbox.x,
     player.hitbox.y,
