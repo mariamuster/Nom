@@ -84,21 +84,21 @@ function preload() {
   myFont = loadFont("assets/LomoWall.otf");
   myFont2 = loadFont("assets/Lomo2.otf");
   leafSound = loadSound("sound/1Leaf.m4a", () => console.log("leaf.wav loaded"));
-  meteorSound = loadSound("sound/1Meteor.mp3", () => console.log("meteor.wav loaded"));
+  meteorSound = loadSound("sound/1Meteor.m4a", () => console.log("meteor.wav loaded"));
   fruitSound = loadSound("sound/2Fruit.m4a", () => console.log("Fruit.wav loaded"));
-  lionSound = loadSound("sound/2Lion.mp3", () => console.log("lion.wav loaded"));
+  lionSound = loadSound("sound/2Lion.m4a", () => console.log("lion.wav loaded"));
   fishSound = loadSound("sound/3Fish.m4a", () => console.log("fish.wav loaded"));
-  orcaSound = loadSound("sound/3Orca.mp3", () => console.log("orca.wav loaded"));
+  orcaSound = loadSound("sound/3Orca.m4a", () => console.log("orca.wav loaded"));
   mouseSound = loadSound("sound/4Mouse.m4a", () => console.log("mouse.wav loaded"));
-  carSound = loadSound("sound/4Car.mp3", () => console.log("car.wav loaded"));
+  carSound = loadSound("sound/4Car.m4a", () => console.log("car.wav loaded"));
   wormSound = loadSound("sound/5Worm.m4a", () => console.log("worm.wav loaded"));
-  windowSound = loadSound("sound/5Window.mp3", () => console.log("window.wav loaded"));
+  windowSound = loadSound("sound/5Window.m4a", () => console.log("window.wav loaded"));
   dustSound = loadSound("sound/6Dust.m4a", () => console.log("dust.wav loaded"));
-  dogSound = loadSound("sound/6Dog.mp3", () => console.log("dog.wav loaded"));
+  dogSound = loadSound("sound/6Dog.m4a", () => console.log("dog.wav loaded"));
   coinSound = loadSound("sound/7Coin.m4a", () => console.log("coin.wav loaded"));
-  clawSound = loadSound("sound/7Claw.mp3", () => console.log("claw.wav loaded"));
+  clawSound = loadSound("sound/7Claw.m4a", () => console.log("claw.wav loaded"));
   sockSound = loadSound("sound/8Sock.m4a", () => console.log("sock.wav loaded"));
-  brickSound = loadSound("sound/8Brick.mp3", () => console.log("brick.wav loaded"));
+  brickSound = loadSound("sound/8Brick.m4a", () => console.log("brick.wav loaded"));
 
 }
 
