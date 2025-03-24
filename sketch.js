@@ -112,11 +112,10 @@ function setup() {
   nameInput.position(width / 2 - 103, height - 140);
   nameInput.size(200);
 
-  // Add a CSS class for additional styling (optional, but good practice)
-  nameInput.class("name-input-style"); // Add this line to attach the class
 
   startButton = createButton("Go");
-  startButton.position(width / 2 - 10, height / 2);
+  startButton.id("start-button"); // Set the ID for CSS styling
+  startButton.position(width / 2, height / 2+230);
   startButton.mousePressed(startGame);
 
   // Initially show the input
@@ -133,14 +132,10 @@ function startScreen() {
   fill(255, 255, 0);
   text("Nom", width / 2, height / 2);
 
-  fill(0, 255, 0);
-  textFont(myFont);
-  fill(255);
-  textSize(30);
-  text("go!", width / 2, height / 2 + 300);
+  startButton.show();
 
   nameInput.show();
-  startButton.hide();
+  //startButton.hide();
 
   textFont(myFont2);
   textSize(30);
@@ -457,9 +452,9 @@ function showNextLevelScreen() {
   text(`Score: ${score}`, width / 2, height / 2 + 60);
 
   textFont(myFont);
-  fill(0, 255, 0);
+  fill(0, 255, 0); // Black text for better contrast
   textSize(30);
-  text("CONTINUE", width / 2, height / 2 + 200);
+  text("Continue", width / 2, height / 2 + 200);
 }
 
 //wann Enemy
@@ -488,7 +483,7 @@ function checkEnemySpawn() {
       spawnScore = 24;
       break;
     case 8:
-      spawnScore = 14;
+      spawnScore = 10;
       break;
     default:
       spawnScore = 15;
@@ -543,7 +538,7 @@ function mousePressed() {
       nextLevel = false;
       currentLevel++; 
       console.log("New level:", currentLevel);
-      if (currentLevel > 7) {
+      if (currentLevel > 8) {
         hasWon = true;
       } else {
         initializeGame();
@@ -606,7 +601,7 @@ function showWinScreen() {
   text("©MARIA ZIMMERMANN 2025", width / 2, height - 140);
   text("SOUND: MILO, ZILLA,", width / 2, height - 100);
   text("CARLOTTA, LIV", width / 2, height - 80);
-  text("ZHdK CODING FOR THE ARTS", width / 2, height - 40);
+  text("ZHdK CAS CODING FOR THE ARTS", width / 2, height - 40);
 }
 
 function checkCollision(object1, object2) {
