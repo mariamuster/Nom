@@ -1509,7 +1509,6 @@ class Enemy {
     ellipse(208, 240, 5); //Auge w
     fill(0);
     ellipse(209, 241, 3); //Auge s
-    arc(110, 110, 100, 100, HALF_PI, -TWO_PI - HALF_PI); //Schwanz
   }
 
   drawBrick() {
