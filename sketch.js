@@ -8,13 +8,14 @@ let enemyActive = false;
 let nextLevel = false;
 let currentLevel = 1;
 let hasWon = false;
-let debugMode = false;
+let debugMode = true;
 
 let myFont;
 let myFont2;
 
 let lastSoundPlayTime = 0;
-const soundCooldown = 320;
+const soundCooldown = 320; // Pause zwischen Sounds
+
 let leafSound;
 let meteorSound;
 let fruitSound;
@@ -55,7 +56,7 @@ function addEventListeners(element, direction) {
 
   const stopMove = (e) => {
     e.preventDefault();
-    player[`moving${direction}`] = false;
+    player[`moving${direction}`] = false; // Stop movement when touch/mouse ends.
   };
 
   // Touch events
@@ -75,7 +76,7 @@ addEventListeners(uiLeft, "Left");
 addEventListeners(uiRight, "Right");
 
 uiTrigger.addEventListener("click", () => {
-  ui.classList.toggle("active");
+  ui.classList.toggle("active"); // UI visibility 
 });
 
 function preload() {
@@ -133,24 +134,23 @@ function setup() {
   initializeGame();
 
   nameInput = createInput();
-  nameInput.id("name-input"); // Set the ID for CSS styling
+  nameInput.id("name-input");
   nameInput.position("auto", "auto");
   nameInput.size(200);
 
   startButton = createButton("Go!");
-  startButton.id("start-button"); // Set the ID for CSS styling
+  startButton.id("start-button");
   startButton.position("auto", "auto");
   startButton.mousePressed(startGame);
 
   nameButton = createButton("Name:");
-  nameButton.id("name-button"); // Set the ID for CSS styling
+  nameButton.id("name-button");
   nameButton.position("auto", "auto");
 
-  // Initially show the input
   nameInput.show();
 
   startButton.hide();
-  nameButton.hide(); // Hide start button initially
+  nameButton.hide();
 }
 
 function startScreen() {
@@ -180,9 +180,9 @@ function startGame() {
 }
 
 function initializeGame() {
-  player = new Player(70, currentLevel);
+  player = new Player(70, currentLevel); // player object, size and level info
   food = [];
-  enemy = new Enemy(-200, height / 2, 100, currentLevel);
+  enemy = new Enemy(-200, height / 2, 100, currentLevel); //enemy  off-screen
   enemyActive = false;
   score = 0;
   gameOver = false;
@@ -218,67 +218,6 @@ function drawHitboxes() {
   }
 }
 
-function draw() {
-  switch (gameState) {
-    case "START":
-      startScreen();
-      break;
-    case "PLAY":
-      if (!gameOver && !nextLevel && !hasWon) {
-        drawLevel();
-
-        for (let i = food.length - 1; i >= 0; i--) {
-          food[i].show();
-          food[i].move();
-          if (food[i].checkCollision()) {
-            food.splice(i, 1);
-            score++;
-            spawnFood();
-            playLevelSound();
-            powerUp();
-            checkEnemySpawn();
-          }
-          if (food[i].x > width) {
-            food.splice(i, 1);
-            spawnFood();
-          }
-          if (enemyActive && food[i].enemyCollision()) {
-            food.splice(i, 1);
-          }
-        }
-
-        player.show();
-        player.move();
-        player.update();
-
-        if (enemyActive) {
-          enemy.show();
-          enemy.move();
-          if (enemy.checkCollision()) {
-            gameOver = true;
-          }
-        }
-
-        // Display score
-        fill(getScoreColor());
-        textSize(40);
-        textFont(myFont);
-        textAlign(LEFT, TOP);
-        text(`Score: ${score}`, 10, 10);
-      } else if (gameOver) {
-        showGameOverScreen();
-      } else if (nextLevel) {
-        showNextLevelScreen();
-      } else if (hasWon) {
-        showWinScreen();
-      }
-      break;
-  }
-
-  if (debugMode) {
-    drawHitboxes();
-  }
-}
 function draw() {
   switch (gameState) {
     case "START":
@@ -615,8 +554,8 @@ function showWinScreen() {
   textSize(50);
   textFont(myFont);
   textAlign(CENTER, CENTER);
-  text("YOU‡WIN!", width / 2, height / 2);
-  fill(20, 0, 255);
+  text("YOU‡WIN", width / 2, height / 2);
+  text(`${playerName}!`, width / 2, height / 2 + 80);  fill(20, 0, 255);
   textSize(20);
   textFont(myFont2);
   text("©MARIA ZIMMERMANN 2025", width / 2, height - 140);
